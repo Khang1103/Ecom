@@ -1,0 +1,1278 @@
+<body>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-inner">
+            <a class="nav-brand" href="#" onclick="showPage('products')">🛒 YODY</a>
+
+            <div class="nav-links">
+                <button class="nav-link active" id="nav-products" onclick="showPage('products')">
+                    <i class="bi bi-grid"></i> Sản phẩm
+                </button>
+                <button class="nav-link" id="nav-orders" onclick="showPage('orders')">
+                    <i class="bi bi-receipt"></i> Đơn hàng
+                </button>
+            </div>
+
+            <div class="nav-actions">
+                <button class="btn btn-outline cart-btn" onclick="showPage('cart')">
+                    <i class="bi bi-cart3"></i> Giỏ hàng
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+
+                <!-- USER MENU (logged in) -->
+                <div class="dropdown d-none" id="userMenu">
+                    <button class="btn btn-primary" onclick="this.closest('.dropdown').classList.toggle('open')">
+                        <i class="bi bi-person-circle"></i> <span id="navUsername">Tài khoản</span> <i
+                            class="bi bi-chevron-down" style="font-size:10px"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-item" onclick="showPage('profile'); closeDropdown()"><i
+                                class="bi bi-person"></i> Trang cá nhân</div>
+                        <div class="dropdown-item" onclick="showPage('orders'); closeDropdown()"><i
+                                class="bi bi-receipt"></i> Đơn hàng của tôi</div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item admin-item d-none" id="adminMenuLink"
+                            onclick="window.location.href='/admin.html'"><i class="bi bi-gear"></i> Quản trị Admin</div>
+                        <div class="dropdown-divider d-none" id="adminDivider"></div>
+                        <div class="dropdown-item danger" onclick="logout(); closeDropdown()"><i
+                                class="bi bi-box-arrow-right"></i> Đăng xuất</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline" id="btnLogin" onclick="showPage('auth')"><i class="bi bi-person"></i>
+                    Đăng nhập</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <!-- ========== 1. PRODUCTS ========== -->
+        <section class="page active" id="page-products" style="background:var(--lp-bg);">
+
+            <!-- ===== HERO FULL-WIDTH ===== -->
+            <div class="lp-hero">
+                <div class="lp-hero-bg">
+                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1800&q=80" alt="YODY Fashion" fetchpriority="high">
+                </div>
+                <div class="lp-hero-orb1"></div>
+                <div class="lp-hero-orb2"></div>
+
+                <div class="lp-hero-content">
+                    <!-- Left: Text -->
+                    <div class="lp-hero-text">
+                        <div class="lp-badge"><i class="bi bi-star-fill"></i> YODY &middot; BỘ SƯU TẬP MỚI 2025</div>
+                        <h1>CHỈN CHU<br><span>cả ngày</span></h1>
+                        <p>Thời trang văn phòng chất lượng cao — thoải mái làm việc, tự tin toả sáng. Giao hàng tận nơi toàn quốc.</p>
+                        <div class="lp-hero-actions">
+                            <button class="lp-btn-primary" onclick="document.getElementById('catalog-section').scrollIntoView({behavior:'smooth'})">
+                                <i class="bi bi-bag-heart"></i> Mua sắm ngay
+                            </button>
+                            <button class="lp-btn-outline" onclick="showPage('orders')">
+                                <i class="bi bi-receipt"></i> Đơn hàng của tôi
+                            </button>
+                        </div>
+                        <div class="lp-hero-stats">
+                            <div class="lp-hero-stat"><div class="num"><span>1000+</span></div><div class="label">Mẫu quần áo</div></div>
+                            <div class="lp-hero-stat"><div class="num"><span>50K+</span></div><div class="label">Khách hàng</div></div>
+                            <div class="lp-hero-stat"><div class="num"><span>4.9★</span></div><div class="label">Đánh giá</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Carousel -->
+                    <div class="lp-hero-visual">
+                        <div class="lp-hero-carousel" id="heroCarousel" aria-label="Bộ sưu tập nổi bật">
+                            <img class="hero-slide active" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1000&q=85" alt="Bộ sưu tập thời trang cao cấp YODY" fetchpriority="high">
+                            <img class="hero-slide" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=85" alt="Thời trang công sở & dạo phố thanh lịch" loading="lazy">
+                            <img class="hero-slide" src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1000&q=85" alt="Phong cách thời thượng xu hướng mới" loading="lazy">
+                            <div class="lp-hero-carousel-badge">🔥 HOT TREND</div>
+                            <div class="lp-hero-carousel-info">
+                                <strong>Bộ sưu tập nổi bật</strong>
+                            </div>
+                            <div class="hero-carousel-controls">
+                                <button type="button" onclick="moveHeroSlide(-1)" aria-label="Ảnh trước"><i class="bi bi-arrow-left"></i></button>
+                                <div class="hero-carousel-dots" aria-label="Chọn ảnh">
+                                    <button class="active" type="button" onclick="showHeroSlide(0)"></button>
+                                    <button type="button" onclick="showHeroSlide(1)"></button>
+                                    <button type="button" onclick="showHeroSlide(2)"></button>
+                                </div>
+                                <button type="button" onclick="moveHeroSlide(1)" aria-label="Ảnh tiếp"><i class="bi bi-arrow-right"></i></button>
+                            </div>
+                        </div>
+                        <!-- Float cards -->
+                        <div class="lp-hero-float-card card1">
+                            <div class="fc-icon">🚚</div>
+                            <div class="fc-text">
+                                <div class="fc-label">VẬN CHUYỂN</div>
+                                <div class="fc-val">Miễn phí toàn quốc</div>
+                            </div>
+                        </div>
+                        <div class="lp-hero-float-card card2">
+                            <div class="fc-icon">⭐</div>
+                            <div class="fc-text">
+                                <div class="fc-label">ĐÁNH GIÁ</div>
+                                <div class="fc-val">4.9 / 5.0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PROMO STRIP ===== -->
+            <div class="lp-promo-strip" aria-hidden="true">
+                <div class="lp-promo-strip-inner">
+                    <span class="lp-promo-item"><i class="bi bi-truck"></i> Miễn phí vận chuyển toàn quốc</span>
+                    <span class="lp-promo-item"><i class="bi bi-star-fill"></i> Flash Sale mỗi ngày — Giảm đến 50%</span>
+                    <span class="lp-promo-item"><i class="bi bi-shield-check"></i> Đổi trả 30 ngày miễn phí</span>
+                    <span class="lp-promo-item"><i class="bi bi-headset"></i> Hỗ trợ 24/7 tận tâm</span>
+                    <span class="lp-promo-item"><i class="bi bi-gift"></i> Tích điểm — Nhận quà hấp dẫn</span>
+                    <!-- duplicate for seamless loop -->
+                    <span class="lp-promo-item"><i class="bi bi-truck"></i> Miễn phí vận chuyển toàn quốc</span>
+                    <span class="lp-promo-item"><i class="bi bi-star-fill"></i> Flash Sale mỗi ngày — Giảm đến 50%</span>
+                    <span class="lp-promo-item"><i class="bi bi-shield-check"></i> Đổi trả 30 ngày miễn phí</span>
+                    <span class="lp-promo-item"><i class="bi bi-headset"></i> Hỗ trợ 24/7 tận tâm</span>
+                    <span class="lp-promo-item"><i class="bi bi-gift"></i> Tích điểm — Nhận quà hấp dẫn</span>
+                </div>
+            </div>
+
+            <!-- ===== FEATURES ===== -->
+            <div class="lp-features">
+                <div class="lp-feature-item">
+                    <div class="lp-feature-icon"><i class="bi bi-truck"></i></div>
+                    <div class="lp-feature-text"><b>Giao hàng toàn quốc</b><small>Nhanh chóng, theo dõi đơn hàng mọi lúc</small></div>
+                </div>
+                <div class="lp-feature-item">
+                    <div class="lp-feature-icon"><i class="bi bi-arrow-repeat"></i></div>
+                    <div class="lp-feature-text"><b>Đổi trả dễ dàng</b><small>30 ngày đổi trả miễn phí, không hỏi lý do</small></div>
+                </div>
+                <div class="lp-feature-item">
+                    <div class="lp-feature-icon"><i class="bi bi-shield-check"></i></div>
+                    <div class="lp-feature-text"><b>Thanh toán an toàn</b><small>COD, MoMo, VNPay, chuyển khoản</small></div>
+                </div>
+                <div class="lp-feature-item">
+                    <div class="lp-feature-icon"><i class="bi bi-headset"></i></div>
+                    <div class="lp-feature-text"><b>Hỗ trợ 24/7</b><small>Đội ngũ tư vấn tận tâm, chuyên nghiệp</small></div>
+                </div>
+            </div>
+
+            <!-- ===== PROMO BANNERS ===== -->
+            <div class="lp-promo-banners" style="padding-top:56px">
+                <!-- Big banner -->
+                <div class="lp-promo-card" onclick="document.getElementById('catalog-section').scrollIntoView({behavior:'smooth'})" style="min-height:280px">
+                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=85" alt="Flash Sale thời trang YODY">
+                    <div class="lp-promo-card-overlay"></div>
+                    <div class="lp-promo-card-body">
+                        <span class="tag">⚡ FLASH SALE</span>
+                        <h3>Giảm đến 50%<br>Hôm nay thôi!</h3>
+                        <p>Hàng trăm sản phẩm xả kho, số lượng có hạn</p>
+                        <button class="lp-btn-sm">Mua ngay <i class="bi bi-arrow-right"></i></button>
+                    </div>
+                </div>
+                <!-- Small banners -->
+                <div class="lp-promo-col">
+                    <div class="lp-promo-card" onclick="document.getElementById('catalog-section').scrollIntoView({behavior:'smooth'})">
+                        <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=85" alt="Sản phẩm mới">
+                        <div class="lp-promo-card-overlay"></div>
+                        <div class="lp-promo-card-body">
+                            <span class="tag">✨ MỚI NHẤT</span>
+                            <h3>Hàng mới<br>về liên tục</h3>
+                            <button class="lp-btn-sm">Xem ngay <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="lp-promo-card" onclick="showPage('auth')">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=85" alt="Ưu đãi thành viên">
+                        <div class="lp-promo-card-overlay"></div>
+                        <div class="lp-promo-card-body">
+                            <span class="tag">🎁 THÀNH VIÊN</span>
+                            <h3>Đăng ký nhận<br>ưu đãi đặc biệt</h3>
+                            <button class="lp-btn-sm">Đăng ký <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== CATALOG ===== -->
+            <div class="lp-catalog" id="catalog-section">
+                <div class="lp-section-label"><i class="bi bi-grid-3x3-gap-fill"></i> BỘ SƯU TẬP QUẦN ÁO THỜI TRANG</div>
+                <h2 class="lp-section-title">Khám phá <span>trang phục</span></h2>
+                <p class="lp-section-sub">Áo sơ mi · Quần jeans · Váy đầm · Áo khoác & Blazer chuẩn form dáng</p>
+
+                <div class="lp-catalog-toolbar">
+                    <div class="lp-cat-tabs" id="catTabsContainer">
+                        <button class="lp-cat-tab active" data-cat="" onclick="setLpCatTab(this, '')">👗 Tất cả trang phục</button>
+                        <!-- dynamic tabs will be inserted here -->
+                    </div>
+                    <div class="lp-search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="productSearch" placeholder="Tìm kiếm áo, quần, váy đầm, blazer..." oninput="filterProducts()">
+                    </div>
+                    <select class="lp-sort-select" id="sortSelect" onchange="filterProducts()">
+                        <option value="">Mặc định</option>
+                        <option value="price-asc">Giá tăng dần</option>
+                        <option value="price-desc">Giá giảm dần</option>
+                        <option value="name-asc">Tên A→Z</option>
+                        <option value="name-desc">Tên Z→A</option>
+                        <option value="stock-desc">Còn nhiều nhất</option>
+                    </select>
+                </div>
+
+                <div class="lp-products-grid" id="productGrid">
+                    <!-- Loading placeholders -->
+                    <div class="product-card" style="height:320px;animation:pulse 1.5s infinite"><div class="product-img-placeholder"></div></div>
+                    <div class="product-card" style="height:320px;animation:pulse 1.5s infinite"><div class="product-img-placeholder"></div></div>
+                    <div class="product-card" style="height:320px;animation:pulse 1.5s infinite"><div class="product-img-placeholder"></div></div>
+                    <div class="product-card" style="height:320px;animation:pulse 1.5s infinite"><div class="product-img-placeholder"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 2. CART ========== -->
+        <section class="page" id="page-cart">
+            <div class="section-header">
+                <h2 class="section-title"><i class="bi bi-cart3"></i> Giỏ hàng của bạn</h2>
+            </div>
+
+            <div class="cart-layout">
+                <div class="card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Đơn giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card cart-summary">
+                        <div class="summary-row">
+                            <span>Tạm tính</span>
+                            <span id="cartSubtotal">0 ₫</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Phí vận chuyển</span>
+                            <span style="color:var(--success)">Miễn phí</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>TỔNG CỘNG</span>
+                            <span id="cartTotal">0 ₫</span>
+                        </div>
+                        <button class="btn btn-success btn-full" style="margin-top:16px" onclick="showPage('checkout')">
+                            <i class="bi bi-credit-card"></i> Tiến hành thanh toán
+                        </button>
+                        <button class="btn btn-outline btn-full" style="margin-top:8px" onclick="showPage('products')">
+                            <i class="bi bi-arrow-left"></i> Tiếp tục mua sắm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 3. CHECKOUT ========== -->
+        <section class="page" id="page-checkout">
+            <div class="section-header">
+                <h2 class="section-title"><i class="bi bi-credit-card"></i> Thông tin thanh toán</h2>
+            </div>
+
+            <div class="checkout-layout">
+                <div>
+                    <!-- Shipping Info -->
+                    <div class="card" style="padding:20px;margin-bottom:16px">
+                        <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">📦 Địa chỉ giao hàng</h3>
+                        <div class="form-group">
+                            <label class="form-label">Họ và tên người nhận *</label>
+                            <input type="text" class="form-control" id="receiverName" placeholder="Nguyễn Văn A"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Số điện thoại *</label>
+                            <input type="tel" class="form-control" id="receiverPhone" placeholder="0901234567" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Địa chỉ giao hàng *</label>
+                            <textarea class="form-control" id="shippingAddress" rows="3"
+                                placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố"
+                                required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ghi chú cho người bán</label>
+                            <input type="text" class="form-control" id="orderNote"
+                                placeholder="Giao hàng giờ hành chính, gọi trước khi giao...">
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="card" style="padding:20px">
+                        <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">💳 Phương thức thanh toán</h3>
+                        <div class="payment-grid">
+                            <div class="payment-option selected" id="pay-COD" onclick="selectPayment('COD')">
+                                <span class="p-icon">💵</span>
+                                <div class="p-name">Tiền mặt (COD)</div>
+                                <div class="p-desc">Thanh toán khi nhận hàng</div>
+                            </div>
+                            <div class="payment-option" id="pay-BANK_TRANSFER" onclick="selectPayment('BANK_TRANSFER')">
+                                <span class="p-icon">🏦</span>
+                                <div class="p-name">Chuyển khoản</div>
+                                <div class="p-desc">Ngân hàng / Internet Banking</div>
+                            </div>
+                            <div class="payment-option" id="pay-MOMO" onclick="selectPayment('MOMO')">
+                                <span class="p-icon">📱</span>
+                                <div class="p-name">Ví MoMo</div>
+                                <div class="p-desc">Thanh toán qua MoMo</div>
+                            </div>
+                            <div class="payment-option" id="pay-VNPAY" onclick="selectPayment('VNPAY')">
+                                <span class="p-icon">💳</span>
+                                <div class="p-name">VNPay</div>
+                                <div class="p-desc">Thẻ ATM / Visa / MasterCard</div>
+                            </div>
+                        </div>
+
+                        <!-- Bank info (shown only when BANK_TRANSFER selected) -->
+                        <div id="bankInfo"
+                            style="display:none;margin-top:16px;background:var(--bg2);border-radius:10px;padding:16px;border:1px solid rgba(59,130,246,0.3)">
+                            <div style="font-size:13px;font-weight:700;color:var(--info);margin-bottom:10px">📋 Thông
+                                tin chuyển khoản</div>
+                            <div style="font-size:13px;margin-bottom:6px;color:var(--text2)">Ngân hàng: <strong
+                                    style="color:var(--text)">Vietcombank</strong></div>
+                            <div style="font-size:13px;margin-bottom:6px;color:var(--text2)">Số tài khoản: <strong
+                                    style="color:var(--text);font-family:monospace">1234 5678 9012</strong></div>
+                            <div style="font-size:13px;margin-bottom:6px;color:var(--text2)">Chủ tài khoản: <strong
+                                    style="color:var(--text)">YODY COMPANY</strong></div>
+                            <div style="font-size:12px;color:var(--muted);margin-top:8px">⚠️ Ghi nội dung chuyển khoản:
+                                [Tên của bạn] - [Số điện thoại]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div>
+                    <div class="card" style="padding:20px;position:sticky;top:80px">
+                        <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">🧾 Tóm tắt đơn hàng</h3>
+                        <div id="checkoutItemsList" style="margin-bottom:16px;max-height:260px;overflow-y:auto"></div>
+                        <div style="border-top:1px solid var(--border);padding-top:12px">
+                            <div class="summary-row">
+                                <span>Tạm tính (<span id="checkoutItemCount">0</span> sản phẩm)</span>
+                                <span id="checkoutSubtotal">0 ₫</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Phí vận chuyển</span>
+                                <span style="color:var(--success)">Miễn phí</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>TỔNG TIỀN</span>
+                                <span id="checkoutTotal">0 ₫</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-success btn-full" style="margin-top:16px" onclick="placeOrder()"
+                            id="placeOrderBtn">
+                            <i class="bi bi-check-circle"></i> Đặt hàng ngay
+                        </button>
+                        <button class="btn btn-outline btn-full" style="margin-top:8px" onclick="showPage('cart')">
+                            <i class="bi bi-arrow-left"></i> Quay lại giỏ hàng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 4. ORDERS ========== -->
+        <section class="page" id="page-orders">
+            <div class="section-header">
+                <h2 class="section-title"><i class="bi bi-receipt"></i> Đơn hàng của tôi</h2>
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã đơn</th>
+                                <th>Ngày đặt</th>
+                                <th>Tổng tiền</th>
+                                <th>Thanh toán</th>
+                                <th>Vận đơn</th>
+                                <th>Trạng thái</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 5. AUTH ========== -->
+        <section class="page" id="page-auth">
+            <div class="auth-wrap">
+                <div class="card" style="padding:28px">
+                    <div style="text-align:center;margin-bottom:24px">
+                        <div style="font-size:40px;margin-bottom:8px">🔐</div>
+                        <h2 style="font-size:22px;font-weight:800">Chào mừng trở lại!</h2>
+                        <p style="color:var(--text2);font-size:14px;margin-top:4px">Đăng nhập để tiếp tục mua sắm</p>
+                    </div>
+                    <div class="tabs">
+                        <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Đăng nhập</button>
+                        <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Đăng ký</button>
+                    </div>
+                    <!-- Login Tab -->
+                    <div class="tab-pane active" id="pane-login">
+                        <form id="loginForm" onsubmit="doLogin(event)">
+                            <div class="form-group">
+                                <label class="form-label">Tên đăng nhập</label>
+                                <input type="text" class="form-control" id="loginUser" required
+                                    placeholder="Nhập username">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mật khẩu</label>
+                                <input type="password" class="form-control" id="loginPass" required
+                                    placeholder="Nhập mật khẩu">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full">
+                                <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                            </button>
+                        </form>
+                    </div>
+                    <!-- Register Tab -->
+                    <div class="tab-pane" id="pane-register">
+                        <form id="registerForm" onsubmit="doRegister(event)">
+                            <div class="form-group">
+                                <label class="form-label">Tên đăng nhập</label>
+                                <input type="text" class="form-control" id="regUser" required
+                                    placeholder="Chọn username (không dấu)">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="regEmail" required
+                                    placeholder="example@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mật khẩu</label>
+                                <input type="password" class="form-control" id="regPass" required
+                                    placeholder="Tối thiểu 6 ký tự">
+                            </div>
+                            <button type="submit" class="btn btn-success btn-full">
+                                <i class="bi bi-person-plus"></i> Tạo tài khoản
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 6. PROFILE ========== -->
+        <section class="page" id="page-profile">
+            <div class="section-header">
+                <h2 class="section-title"><i class="bi bi-person-badge"></i> Trang cá nhân</h2>
+            </div>
+            <div class="profile-wrap">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+                    <div style="font-size:20px;font-weight:800;margin-bottom:4px" id="profileName">--</div>
+                    <div style="font-size:13px;color:var(--text2)" id="profileRole">Thành viên</div>
+                </div>
+                <div class="card">
+                    <div class="info-row">
+                        <span class="info-label">Tên đăng nhập</span>
+                        <span class="info-value" id="profileUsername">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" id="profileEmail">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Vai trò</span>
+                        <span class="info-value" id="profileRoleBadge">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Thành viên từ</span>
+                        <span class="info-value">--</span>
+                    </div>
+                </div>
+                <div style="margin-top:14px;display:flex;gap:10px">
+                    <button class="btn btn-outline" style="flex:1" onclick="showPage('orders')"><i
+                            class="bi bi-receipt"></i> Đơn hàng của tôi</button>
+                    <button class="btn btn-danger" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Đăng
+                        xuất</button>
+                </div>
+            </div>
+        </section>
+
+    </div><!-- /main -->
+
+    <!-- QUICK VIEW MODAL -->
+    <div class="modal-overlay" id="quickViewModal" onclick="closeModal(event)">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-label="Xem nhanh sản phẩm">
+            <button class="modal-close" onclick="closeQuickView()" aria-label="Đóng"><i class="bi bi-x"></i></button>
+            <div class="modal-layout">
+                <div class="modal-img-wrap" id="modalImgWrap">
+                    <div class="modal-img-placeholder">🛍️</div>
+                </div>
+                <div class="modal-info">
+                    <div class="modal-category" id="modalCategory">Sản phẩm</div>
+                    <div class="modal-badge-row" id="modalBadges"></div>
+                    <div class="modal-name" id="modalName">Tên sản phẩm</div>
+                    <div class="modal-price" id="modalPrice">0 ₫</div>
+                    <div class="modal-desc" id="modalDesc">Mô tả sản phẩm...</div>
+                    <div class="modal-stock-bar-wrap" id="modalStockWrap">
+                        <div class="modal-stock-label">
+                            <span>Tình trạng kho</span>
+                            <span id="modalStockText">--</span>
+                        </div>
+                        <div class="modal-stock-bar">
+                            <div class="modal-stock-fill" id="modalStockFill" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="modal-qty-row">
+                        <span class="modal-qty-label">Số lượng:</span>
+                        <div class="modal-qty-ctrl">
+                            <button class="modal-qty-btn" onclick="changeModalQty(-1)">−</button>
+                            <span class="modal-qty-num" id="modalQty">1</span>
+                            <button class="modal-qty-btn" onclick="changeModalQty(1)">+</button>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-btn-cart" id="modalAddBtn" onclick="addFromModal()">
+                            <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                        </button>
+                        <button class="modal-btn-wish" id="modalWishBtn" onclick="toggleWishModal()" title="Yêu thích">🤍</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCROLL TO TOP -->
+    <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()" aria-label="Cuộn lên đầu">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+    <!-- SCROLL PROGRESS -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <footer class="store-footer">
+        <div class="store-footer-inner">
+            <section>
+                <h2>🛒 YODY</h2>
+                <p>Mua sắm tiện lợi, giao hàng tận nơi. Cảm ơn bạn đã tin tưởng và lựa chọn YODY.</p>
+            </section>
+            <section>
+                <h3>CHI NHÁNH CỬA HÀNG</h3>
+                <ul>
+                    <li><i class="bi bi-shop"></i><span>Chi nhánh chính — YODY</span></li>
+                    <li><i class="bi bi-geo-alt"></i><span>Địa chỉ: 54 Phố Triều Khúc - Phường Phương Liệt</span></li>
+                </ul>
+            </section>
+            <section>
+                <h3>LIÊN HỆ</h3>
+                <ul>
+                    <li><i class="bi bi-telephone"></i><span>Hotline: 0345687817</span></li>
+                    <li><i class="bi bi-envelope"></i><span>Email:[EMAIL_ADDRESS] </span></li>
+                </ul>
+            </section>
+            <section>
+                <h3>GIỜ HOẠT ĐỘNG</h3>
+                <ul>
+                    <li><i class="bi bi-clock"></i><span>Thời gian mở cửa:8h30-21h30</span></li>
+                    <li><i class="bi bi-truck"></i><span>Hỗ trợ giao hàng toàn quốc</span></li>
+                </ul>
+            </section>
+        </div>
+        <div class="store-footer-bottom">© 2026 YODY. Bản quyền thuộc về cửa hàng.</div>
+    </footer>
+
+    <script>
+        const API = 'http://localhost:8080/api';
+        let token = localStorage.getItem('token');
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        let selectedPayment = 'COD';
+        let allProducts = [];
+        let allCategories = [];
+
+        // ===== NAVIGATION =====
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            const el = document.getElementById(`page-${page}`);
+            if (el) el.classList.add('active');
+            const nav = document.getElementById(`nav-${page}`);
+            if (nav) nav.classList.add('active');
+            closeDropdown();
+
+            if (page === 'products') loadProducts();
+            if (page === 'cart') renderCart();
+            if (page === 'checkout') renderCheckout();
+            if (page === 'orders') loadOrders();
+            if (page === 'profile') loadProfile();
+            return false;
+        }
+
+        function closeDropdown() {
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+        }
+        document.addEventListener('click', e => { if (!e.target.closest('.dropdown')) closeDropdown(); });
+
+        // ===== TOAST =====
+        function toast(msg, type = 'info') {
+            const icons = { success: 'bi-check-circle-fill', error: 'bi-x-circle-fill', info: 'bi-info-circle-fill' };
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.innerHTML = `<i class="bi ${icons[type]}"></i><span>${msg}</span>`;
+            document.getElementById('toastContainer').appendChild(el);
+            setTimeout(() => el.remove(), 3500);
+        }
+
+        // ===== TABS (AUTH) =====
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById(`pane-${tab}`).classList.add('active');
+        }
+
+        // ===== FORMAT =====
+        function fmtMoney(v) { return Number(v).toLocaleString('vi-VN') + ' ₫'; }
+        function fmtDate(d) {
+            if (!d) return '--';
+            return new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function statusBadge(s) {
+            const map = {
+                PENDING: ['badge-pending', '⏳ Chờ xác nhận'],
+                PROCESSING: ['badge-processing', '🔧 Đang xử lý'],
+                SHIPPED: ['badge-shipped', '🚚 Đang vận chuyển'],
+                DELIVERED: ['badge-delivered', '✅ Đã giao'],
+                CANCELLED: ['badge-cancelled', '❌ Đã hủy'],
+            };
+            const [cls, label] = map[s] || ['badge-pending', s];
+            return `<span class="badge ${cls}">${label}</span>`;
+        }
+
+        function payLabel(m) {
+            return { COD: '💵 COD', BANK_TRANSFER: '🏦 Chuyển khoản', MOMO: '📱 MoMo', VNPAY: '💳 VNPay' }[m] || m;
+        }
+
+        // ===== AUTH =====
+        function checkAuth() {
+            const username = localStorage.getItem('username');
+            const roles = JSON.parse(localStorage.getItem('roles') || '[]');
+            if (token && username) {
+                document.getElementById('userMenu').classList.remove('d-none');
+                document.getElementById('btnLogin').classList.add('d-none');
+                document.getElementById('navUsername').textContent = username;
+                // Show admin link if ADMIN
+                if (roles.includes('ROLE_ADMIN')) {
+                    document.getElementById('adminMenuLink').classList.remove('d-none');
+                    document.getElementById('adminDivider').classList.remove('d-none');
+                }
+            } else {
+                document.getElementById('userMenu').classList.add('d-none');
+                document.getElementById('btnLogin').classList.remove('d-none');
+            }
+        }
+
+        async function doLogin(e) {
+            e.preventDefault();
+            try {
+                const res = await fetch(`${API}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: document.getElementById('loginUser').value, password: document.getElementById('loginPass').value })
+                });
+                if (!res.ok) throw new Error('Sai tên đăng nhập hoặc mật khẩu');
+                const data = await res.json();
+                token = data.accessToken;
+                localStorage.setItem('token', token);
+                localStorage.setItem('username', data.username);
+                localStorage.setItem('email', data.email || '');
+                localStorage.setItem('roles', JSON.stringify(data.roles || []));
+                checkAuth();
+                toast('Đăng nhập thành công! Chào mừng ' + data.username, 'success');
+                showPage('products');
+            } catch (err) {
+                toast(err.message, 'error');
+            }
+        }
+
+        async function doRegister(e) {
+            e.preventDefault();
+            try {
+                const res = await fetch(`${API}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('regUser').value,
+                        email: document.getElementById('regEmail').value,
+                        password: document.getElementById('regPass').value
+                    })
+                });
+                if (!res.ok) { const t = await res.text(); throw new Error(t || 'Đăng ký thất bại'); }
+                toast('Đăng ký thành công! Vui lòng đăng nhập.', 'success');
+                switchTab('login');
+            } catch (err) {
+                toast(err.message, 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            token = null;
+            cart = [];
+            checkAuth();
+            updateCartBadge();
+            toast('Đã đăng xuất thành công', 'info');
+            showPage('products');
+        }
+
+        // ===== PRODUCTS =====
+        let activeCatFilter = '';
+
+        async function loadProducts() {
+            try {
+                [allProducts, allCategories] = await Promise.all([
+                    fetch(`${API}/products`).then(r => r.json()),
+                    fetch(`${API}/categories`).then(r => r.json())
+                ]);
+
+                // Build landing page category tabs
+                const tabsContainer = document.getElementById('catTabsContainer');
+                if (tabsContainer) {
+                    const extraTabs = allCategories.map(c =>
+                        `<button class="lp-cat-tab" data-cat="${c.id}" onclick="setLpCatTab(this, '${c.id}')">${c.name}</button>`
+                    ).join('');
+                    // Insert after first "All" tab
+                    tabsContainer.innerHTML = `<button class="lp-cat-tab active" data-cat="" onclick="setLpCatTab(this, '')">🏷️ Tất cả</button>` + extraTabs;
+                }
+
+                // Also keep legacy catFilter select in sync (if exists)
+                const sel = document.getElementById('catFilter');
+                if (sel) {
+                    sel.innerHTML = '<option value="">Tất cả danh mục</option>' +
+                        allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                }
+
+                renderProducts(allProducts);
+            } catch (e) {
+                toast('Không thể tải sản phẩm', 'error');
+                renderProducts(demoProducts());
+            }
+        }
+
+        function demoProducts() {
+            return [
+                { id: 1, name: 'Áo Thun Nam Cotton', price: 199000, stock: 50, categoryName: 'Thời trang', description: 'Áo thun chất liệu cotton 100%' },
+                { id: 2, name: 'Quần Jeans Slim Fit', price: 399000, stock: 30, categoryName: 'Thời trang', description: 'Quần jeans slim fit thời trang' },
+                { id: 3, name: 'Giày Sneaker Sport', price: 599000, stock: 20, categoryName: 'Giày dép', description: 'Giày sneaker năng động' },
+                { id: 4, name: 'Balo Laptop Chống Nước', price: 299000, stock: 15, categoryName: 'Phụ kiện', description: 'Balo chống nước 25L' },
+            ];
+        }
+
+        function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            if (!products || products.length === 0) {
+                grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><i class="bi bi-search"></i><p>Không tìm thấy sản phẩm nào</p></div>';
+                return;
+            }
+            grid.innerHTML = products.map(p => {
+                const isWished = wishlist.includes(p.id);
+                const badgeHTML = getBadges(p);
+                return `
+        <div class="product-card">
+            <button class="product-card-wish${isWished ? ' wished' : ''}" onclick="event.stopPropagation();toggleWish(${p.id})" title="Yêu thích"
+                id="wish-${p.id}">${isWished ? '❤️' : '🤍'}</button>
+            <div class="product-img-wrap" onclick="openQuickView(${p.id})" title="Xem chi tiết sản phẩm" style="cursor:pointer">
+                ${p.imageUrl
+                    ? `<img src="${p.imageUrl}" class="product-img" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+                    : ''
+                }
+                <div class="product-img-placeholder" ${p.imageUrl ? 'style="display:none"' : ''}>👗</div>
+                <div class="product-img-overlay">
+                    <i class="bi bi-zoom-in"></i>
+                    <span>Xem chi tiết</span>
+                </div>
+            </div>
+            <div class="product-body">
+                ${badgeHTML ? `<div style="margin-bottom:6px">${badgeHTML}</div>` : ''}
+                <div class="product-cat">${p.categoryName || 'Quần áo thời trang'}</div>
+                <div class="product-name">${p.name}</div>
+                <div class="product-price">${fmtMoney(p.price)}</div>
+                <div class="product-stock">${p.stock > 0 ? `Còn ${p.stock} sản phẩm` : '⚠️ Hết hàng'}</div>
+                <button class="product-add-btn" ${p.stock === 0 ? 'disabled' : ''} onclick="addToCart(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price})">
+                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                </button>
+            </div>
+        </div>
+    `}).join('');
+        }
+
+        function getBadges(p) {
+            const badges = [];
+            if (p.stock > 0 && p.stock <= 5) badges.push('<span class="modal-badge badge-low">⚠️ SẮP HẾT</span>');
+            if (p.stock === 0) return '';
+            const daysOld = p.createdAt ? Math.floor((Date.now() - new Date(p.createdAt)) / 86400000) : 999;
+            if (daysOld < 14) badges.push('<span class="modal-badge badge-new">✨ MỚI</span>');
+            else if (p.stock > 50) badges.push('<span class="modal-badge badge-hot">🔥 HOT</span>');
+            return badges.join('');
+        }
+
+        function setLpCatTab(btn, catId) {
+            activeCatFilter = catId;
+            document.querySelectorAll('.lp-cat-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            filterProducts();
+        }
+
+        function filterProducts() {
+            const q = (document.getElementById('productSearch')?.value || '').toLowerCase();
+            const cat = activeCatFilter || (document.getElementById('catFilter')?.value || '');
+            const sort = document.getElementById('sortSelect').value;
+            let filtered = allProducts.filter(p =>
+                (!q || p.name.toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q)) &&
+                (!cat || String(p.categoryId) === String(cat))
+            );
+            if (sort === 'price-asc') filtered.sort((a,b) => a.price - b.price);
+            else if (sort === 'price-desc') filtered.sort((a,b) => b.price - a.price);
+            else if (sort === 'name-asc') filtered.sort((a,b) => a.name.localeCompare(b.name, 'vi'));
+            else if (sort === 'name-desc') filtered.sort((a,b) => b.name.localeCompare(a.name, 'vi'));
+            else if (sort === 'stock-desc') filtered.sort((a,b) => b.stock - a.stock);
+            renderProducts(filtered);
+        }
+
+        // ===== CART =====
+        function addToCart(id, name, price) {
+            const item = cart.find(i => i.id === id);
+            if (item) item.quantity++;
+            else cart.push({ id, name, price, quantity: 1 });
+            saveCart();
+            updateCartBadge();
+            toast(`Đã thêm "${name}" vào giỏ hàng`, 'success');
+        }
+
+        function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); }
+
+        function updateCartBadge() {
+            const count = cart.reduce((s, i) => s + i.quantity, 0);
+            document.getElementById('cartBadge').textContent = count;
+        }
+
+        function renderCart() {
+            const tbody = document.getElementById('cartBody');
+            if (cart.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="empty"><i class="bi bi-cart-x"></i><p>Giỏ hàng trống. <a href="#" onclick="showPage(\'products\')" style="color:var(--accent)">Mua sắm ngay!</a></p></div></td></tr>';
+                document.getElementById('cartSubtotal').textContent = '0 ₫';
+                document.getElementById('cartTotal').textContent = '0 ₫';
+                return;
+            }
+            let total = 0;
+            tbody.innerHTML = cart.map(item => {
+                const sub = item.price * item.quantity;
+                total += sub;
+                return `
+            <tr>
+                <td><strong>${item.name}</strong></td>
+                <td style="color:var(--text2)">${fmtMoney(item.price)}</td>
+                <td>
+                    <div class="qty-ctrl">
+                        <button class="qty-btn" onclick="changeQty(${item.id}, ${item.quantity - 1})">−</button>
+                        <span class="qty-num">${item.quantity}</span>
+                        <button class="qty-btn" onclick="changeQty(${item.id}, ${item.quantity + 1})">+</button>
+                    </div>
+                </td>
+                <td style="font-weight:700;color:var(--accent2)">${fmtMoney(sub)}</td>
+                <td><button class="btn btn-danger" onclick="removeFromCart(${item.id})" style="padding:6px 10px"><i class="bi bi-trash"></i></button></td>
+            </tr>`;
+            }).join('');
+            document.getElementById('cartSubtotal').textContent = fmtMoney(total);
+            document.getElementById('cartTotal').textContent = fmtMoney(total);
+        }
+
+        function changeQty(id, qty) {
+            if (qty < 1) { removeFromCart(id); return; }
+            const item = cart.find(i => i.id === id);
+            if (item) { item.quantity = qty; saveCart(); renderCart(); updateCartBadge(); }
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            saveCart(); renderCart(); updateCartBadge();
+        }
+
+        // ===== CHECKOUT =====
+        function renderCheckout() {
+            if (!token) { toast('Vui lòng đăng nhập để thanh toán', 'error'); showPage('auth'); return; }
+            if (cart.length === 0) { toast('Giỏ hàng trống!', 'error'); showPage('cart'); return; }
+
+            let total = 0;
+            document.getElementById('checkoutItemsList').innerHTML = cart.map(item => {
+                const sub = item.price * item.quantity;
+                total += sub;
+                return `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+            <span style="color:var(--text2)">${item.name} <strong style="color:var(--text)">×${item.quantity}</strong></span>
+            <span style="font-weight:700;color:var(--accent2)">${fmtMoney(sub)}</span>
+        </div>`;
+            }).join('');
+            document.getElementById('checkoutItemCount').textContent = cart.reduce((s, i) => s + i.quantity, 0);
+            document.getElementById('checkoutSubtotal').textContent = fmtMoney(total);
+            document.getElementById('checkoutTotal').textContent = fmtMoney(total);
+        }
+
+        function selectPayment(method) {
+            selectedPayment = method;
+            document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`pay-${method}`).classList.add('selected');
+            document.getElementById('bankInfo').style.display = method === 'BANK_TRANSFER' ? 'block' : 'none';
+        }
+
+        async function placeOrder() {
+            const address = document.getElementById('shippingAddress').value.trim();
+            const name = document.getElementById('receiverName').value.trim();
+            const phone = document.getElementById('receiverPhone').value.trim();
+            if (!address || !name || !phone) { toast('Vui lòng điền đầy đủ thông tin giao hàng', 'error'); return; }
+
+            const fullAddress = `${name} | ${phone} | ${address}`;
+            const payload = {
+                shippingAddress: fullAddress,
+                paymentMethod: selectedPayment,
+                items: cart.map(i => ({ productId: i.id, quantity: i.quantity }))
+            };
+
+            const btn = document.getElementById('placeOrderBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang đặt hàng...';
+
+            try {
+                const res = await fetch(`${API}/orders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) { const t = await res.text(); throw new Error(t); }
+                const order = await res.json();
+                cart = [];
+                saveCart();
+                updateCartBadge();
+                toast(`🎉 Đặt hàng thành công! Mã đơn: #${order.id}`, 'success');
+                showPage('orders');
+            } catch (err) {
+                toast('Đặt hàng thất bại: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-check-circle"></i> Đặt hàng ngay';
+            }
+        }
+
+        // ===== ORDERS =====
+        async function loadOrders() {
+            const tbody = document.getElementById('ordersBody');
+            if (!token) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><i class="bi bi-lock"></i><p>Vui lòng đăng nhập để xem đơn hàng</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)"><i class="bi bi-hourglass-split" style="font-size:24px"></i></td></tr>';
+            try {
+                const orders = await fetch(`${API}/orders`, { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json());
+                if (!orders || orders.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><i class="bi bi-receipt"></i><p>Bạn chưa có đơn hàng nào. <a href="#" onclick="showPage(\'products\')" style="color:var(--accent)">Mua sắm ngay!</a></p></div></td></tr>';
+                    return;
+                }
+                tbody.innerHTML = orders.map(o => `
+            <tr class="order-row" onclick="toggleOrderDetail(${o.id}, this)">
+                <td><strong style="color:var(--accent)">#${o.id}</strong></td>
+                <td style="font-size:12px;color:var(--text2)">${fmtDate(o.createdAt)}</td>
+                <td style="font-weight:700;color:var(--accent2)">${fmtMoney(o.totalPrice)}</td>
+                <td style="font-size:12px">${payLabel(o.paymentMethod)}</td>
+                <td style="font-family:monospace;font-size:12px;color:${o.trackingNumber ? 'var(--success)' : 'var(--muted)'}">
+                    ${o.trackingNumber || '--'}
+                </td>
+                <td>${statusBadge(o.status)}</td>
+                <td><i class="bi bi-chevron-down" style="color:var(--muted);transition:transform 0.2s" id="chevron-${o.id}"></i></td>
+            </tr>
+            <tr id="detail-${o.id}" style="display:none">
+                <td colspan="7" style="padding:0">
+                    ${renderOrderDetail(o)}
+                </td>
+            </tr>
+        `).join('');
+            } catch (err) {
+                toast('Không thể tải đơn hàng: ' + err.message, 'error');
+            }
+        }
+
+        function toggleOrderDetail(id, row) {
+            const detailRow = document.getElementById(`detail-${id}`);
+            const chevron = document.getElementById(`chevron-${id}`);
+            const isOpen = detailRow.style.display !== 'none';
+            detailRow.style.display = isOpen ? 'none' : '';
+            chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+        }
+
+        function renderOrderDetail(order) {
+            const steps = ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED'];
+            const stepLabels = ['Đặt hàng', 'Xác nhận & đóng gói', 'Đang vận chuyển', 'Giao thành công'];
+            const stepIcons = ['📋', '🔧', '🚚', '✅'];
+            const currentIdx = order.status === 'CANCELLED' ? -1 : steps.indexOf(order.status);
+
+            const timelineHTML = order.status === 'CANCELLED'
+                ? `<div class="t-step"><div class="t-dot" style="background:var(--danger);border-color:var(--danger);color:white">❌</div><div class="t-body"><div class="t-title">Đơn hàng đã bị hủy</div></div></div>`
+                : steps.map((s, i) => `
+            <div class="t-step ${i < currentIdx ? 'done' : ''} ${i === currentIdx ? 'current' : ''}">
+                <div class="t-dot">${stepIcons[i]}</div>
+                <div class="t-body">
+                    <div class="t-title">${stepLabels[i]}</div>
+                    <div class="t-sub">${i <= currentIdx ? (i === 0 ? fmtDate(order.createdAt) : 'Hoàn thành') : 'Chờ xử lý'}</div>
+                </div>
+            </div>`
+                ).join('');
+
+            const itemsHTML = (order.items || []).map(item => `
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid rgba(45,50,80,0.4)">
+            <span>${item.productName} <span style="color:var(--muted)">×${item.quantity}</span></span>
+            <span style="font-weight:600;color:var(--accent2)">${fmtMoney(item.price * item.quantity)}</span>
+        </div>
+    `).join('');
+
+            return `
+        <div class="order-detail-panel">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+                <div>
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📦 Thông tin giao hàng</div>
+                    <div style="font-size:13px;color:var(--text2);line-height:1.8">${order.shippingAddress || '--'}</div>
+                    ${order.trackingNumber ? `<div style="margin-top:8px;font-size:12px">Mã vận đơn: <code style="background:var(--bg3);padding:2px 8px;border-radius:4px;color:var(--success)">${order.trackingNumber}</code></div>` : ''}
+                </div>
+                <div>
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:10px">💳 Thanh toán</div>
+                    <div style="font-size:13px;margin-bottom:4px">${payLabel(order.paymentMethod)}</div>
+                    <div style="font-size:16px;font-weight:800;color:var(--accent2)">${fmtMoney(order.totalPrice)}</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div>
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:10px">🚚 Hành trình đơn hàng</div>
+                    <div class="tracking-timeline">${timelineHTML}</div>
+                </div>
+                <div>
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:10px">🛍️ Sản phẩm đã đặt</div>
+                    ${itemsHTML}
+                    <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:800;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">
+                        <span>Tổng cộng</span>
+                        <span style="color:var(--accent2)">${fmtMoney(order.totalPrice)}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+        }
+
+        // ===== PROFILE =====
+        function loadProfile() {
+            const username = localStorage.getItem('username') || '--';
+            const email = localStorage.getItem('email') || '--';
+            const roles = JSON.parse(localStorage.getItem('roles') || '[]');
+            const isAdmin = roles.includes('ROLE_ADMIN');
+
+            document.getElementById('profileAvatar').textContent = username.charAt(0).toUpperCase();
+            document.getElementById('profileName').textContent = username;
+            document.getElementById('profileUsername').textContent = username;
+            document.getElementById('profileEmail').textContent = email;
+            document.getElementById('profileRole').textContent = isAdmin ? '👑 Quản trị viên' : '🛍️ Thành viên';
+            document.getElementById('profileRoleBadge').innerHTML = isAdmin
+                ? '<span class="badge" style="background:rgba(239,68,68,0.15);color:#f87171">👑 Admin</span>'
+                : '<span class="badge" style="background:rgba(59,130,246,0.15);color:#60a5fa">🛍️ User</span>';
+        }
+
+        // ===== WISHLIST =====
+        let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        function toggleWish(id) {
+            const idx = wishlist.indexOf(id);
+            if (idx === -1) {
+                wishlist.push(id);
+                toast('❤️ Đã thêm vào danh sách yêu thích', 'success');
+            } else {
+                wishlist.splice(idx, 1);
+                toast('Đã bỏ khỏi danh sách yêu thích', 'info');
+            }
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            const btn = document.getElementById(`wish-${id}`);
+            if (btn) { btn.textContent = wishlist.includes(id) ? '❤️' : '🤍'; btn.classList.toggle('wished', wishlist.includes(id)); }
+        }
+
+        // ===== QUICK VIEW MODAL =====
+        let modalProduct = null;
+        let modalQtyVal = 1;
+
+        function openQuickView(id) {
+            const p = allProducts.find(x => x.id === id);
+            if (!p) return;
+            modalProduct = p;
+            modalQtyVal = 1;
+
+            // Image
+            const imgWrap = document.getElementById('modalImgWrap');
+            if (p.imageUrl) {
+                imgWrap.innerHTML = `<img src="${p.imageUrl}" alt="${p.name}" onerror="this.style.display='none'">`;
+            } else {
+                imgWrap.innerHTML = '<div class="modal-img-placeholder">🛍️</div>';
+            }
+
+            document.getElementById('modalCategory').textContent = p.categoryName || 'Sản phẩm';
+            document.getElementById('modalName').textContent = p.name;
+            document.getElementById('modalPrice').textContent = fmtMoney(p.price);
+            document.getElementById('modalDesc').textContent = p.description || 'Không có mô tả.';
+            document.getElementById('modalQty').textContent = 1;
+
+            // Badges
+            document.getElementById('modalBadges').innerHTML = getBadges(p);
+
+            // Stock bar
+            const maxStock = 100;
+            const pct = Math.min(100, Math.round((p.stock / maxStock) * 100));
+            const fill = document.getElementById('modalStockFill');
+            fill.style.width = p.stock > 0 ? Math.max(pct, 4) + '%' : '0%';
+            fill.className = 'modal-stock-fill' + (p.stock <= 5 ? ' low' : '');
+            document.getElementById('modalStockText').textContent = p.stock > 0 ? `Còn ${p.stock} sản phẩm` : '⚠️ Hết hàng';
+
+            // Add btn
+            const addBtn = document.getElementById('modalAddBtn');
+            addBtn.disabled = p.stock === 0;
+            addBtn.innerHTML = p.stock === 0
+                ? '<i class="bi bi-x-circle"></i> Hết hàng'
+                : '<i class="bi bi-cart-plus"></i> Thêm vào giỏ';
+
+            // Wish btn
+            const isWished = wishlist.includes(p.id);
+            document.getElementById('modalWishBtn').textContent = isWished ? '❤️' : '🤍';
+
+            document.getElementById('quickViewModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeQuickView() {
+            document.getElementById('quickViewModal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function closeModal(e) {
+            if (e.target === document.getElementById('quickViewModal')) closeQuickView();
+        }
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeQuickView(); });
+
+        function changeModalQty(delta) {
+            if (!modalProduct) return;
+            modalQtyVal = Math.max(1, Math.min(modalProduct.stock, modalQtyVal + delta));
+            document.getElementById('modalQty').textContent = modalQtyVal;
+        }
+
+        function addFromModal() {
+            if (!modalProduct) return;
+            const item = cart.find(i => i.id === modalProduct.id);
+            const newQty = (item ? item.quantity : 0) + modalQtyVal;
+            if (newQty > modalProduct.stock) {
+                toast(`Chỉ còn ${modalProduct.stock} sản phẩm trong kho`, 'error'); return;
+            }
+            if (item) item.quantity = newQty;
+            else cart.push({ id: modalProduct.id, name: modalProduct.name, price: modalProduct.price, quantity: modalQtyVal });
+            saveCart();
+            updateCartBadge();
+            toast(`✅ Đã thêm ${modalQtyVal}x "${modalProduct.name}" vào giỏ`, 'success');
+            closeQuickView();
+        }
+
+        function toggleWishModal() {
+            if (!modalProduct) return;
+            toggleWish(modalProduct.id);
+            document.getElementById('modalWishBtn').textContent = wishlist.includes(modalProduct.id) ? '❤️' : '🤍';
+        }
+
+        // ===== SCROLL TO TOP + PROGRESS + NAVBAR =====
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const scrollBtn = document.getElementById('scrollTopBtn');
+            const progressBar = document.getElementById('scrollProgress');
+            const nav = document.querySelector('nav');
+            if (scrollBtn) scrollBtn.classList.toggle('visible', scrollY > 300);
+            if (progressBar) {
+                const docH = document.documentElement.scrollHeight - window.innerHeight;
+                progressBar.style.width = docH > 0 ? (scrollY / docH * 100) + '%' : '0%';
+            }
+            if (nav) nav.classList.toggle('scrolled', scrollY > 60);
+        }, { passive: true });
+
+        // ===== INIT =====
+        window.addEventListener('load', () => {
+            checkAuth();
+            updateCartBadge();
+            loadProducts();
+            initHeroCarousel();
+            if (window.gsap) {
+                // Hero text animation
+                gsap.from('.lp-hero-text > *', { opacity: 0, y: 30, duration: 0.7, stagger: 0.13, ease: 'power3.out' });
+                gsap.from('.lp-hero-visual', { opacity: 0, x: 40, duration: 0.85, delay: 0.2, ease: 'power3.out' });
+                gsap.from('.lp-hero-float-card', { opacity: 0, scale: 0.8, duration: 0.6, stagger: 0.15, delay: 0.5, ease: 'back.out(1.5)' });
+                if (window.ScrollTrigger) {
+                    gsap.registerPlugin(window.ScrollTrigger);
+                    gsap.from('.lp-feature-item', {
+                        opacity: 0, y: 20, duration: 0.5, stagger: 0.08,
+                        scrollTrigger: { trigger: '.lp-features', start: 'top 88%' }
+                    });
+                    gsap.from('.lp-promo-card', {
+                        opacity: 0, y: 30, duration: 0.6, stagger: 0.12,
+                        scrollTrigger: { trigger: '.lp-promo-banners', start: 'top 88%' }
+                    });
+                    gsap.from('.product-card', {
+                        opacity: 0, y: 24, duration: 0.5, stagger: 0.06,
+                        scrollTrigger: { trigger: '.lp-products-grid', start: 'top 88%' }
+                    });
+                }
+            }
+        });
+
+        let activeHeroSlide = 0;
+        let heroSlideTimer = null;
+
+        function showHeroSlide(index) {
+            const slides = [...document.querySelectorAll('.hero-slide')];
+            const dots = [...document.querySelectorAll('.hero-carousel-dots button')];
+            if (!slides.length) return;
+            activeHeroSlide = (index + slides.length) % slides.length;
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === activeHeroSlide));
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === activeHeroSlide));
+        }
+
+        function moveHeroSlide(direction) {
+            showHeroSlide(activeHeroSlide + direction);
+            restartHeroSlideTimer();
+        }
+
+        function restartHeroSlideTimer() {
+            if (heroSlideTimer) clearInterval(heroSlideTimer);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                heroSlideTimer = setInterval(() => showHeroSlide(activeHeroSlide + 1), 5000);
+            }
+        }
+
+        function initHeroCarousel() {
+            const carousel = document.getElementById('heroCarousel');
+            if (!carousel) return;
+            carousel.addEventListener('mouseenter', () => clearInterval(heroSlideTimer));
+            carousel.addEventListener('mouseleave', restartHeroSlideTimer);
+            restartHeroSlideTimer();
+        }
+    </script>
+</body>
+
+</html>

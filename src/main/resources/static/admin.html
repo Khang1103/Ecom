@@ -1,0 +1,3238 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YODY</title>
+    <meta name="description" content="Bảng quản trị hệ thống YODY - Quản lý sản phẩm, đơn hàng, và doanh thu">
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- GSAP Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0f1117;
+            --bg-secondary: #1a1d27;
+            --bg-card: #1e2130;
+            --bg-hover: #252840;
+            --accent-primary: #6c63ff;
+            --accent-secondary: #f97316;
+            --accent-success: #22c55e;
+            --accent-danger: #ef4444;
+            --accent-warning: #f59e0b;
+            --accent-info: #3b82f6;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #2d3250;
+            --sidebar-w: 260px;
+            --radius: 12px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-primary), #a78bfa);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .sidebar-logo .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-logo .logo-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section-title {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 8px 12px 6px;
+            margin-top: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            margin-bottom: 2px;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.2), rgba(108, 99, 255, 0.1));
+            color: var(--accent-primary);
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        .nav-item .nav-icon {
+            width: 20px;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .nav-item .nav-badge {
+            margin-left: auto;
+            background: var(--accent-danger);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: var(--bg-hover);
+            margin-bottom: 8px;
+        }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-primary), #a78bfa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 9px;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ===== TOPBAR ===== */
+        .topbar {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .topbar-title p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), #a78bfa);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(108, 99, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        /* ===== CONTENT AREA ===== */
+        .content {
+            padding: 28px;
+            flex: 1;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* ===== STATS CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: rgba(108, 99, 255, 0.3);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .stat-card.purple::before {
+            background: linear-gradient(90deg, var(--accent-primary), #a78bfa);
+        }
+
+        .stat-card.orange::before {
+            background: linear-gradient(90deg, var(--accent-secondary), #fcd34d);
+        }
+
+        .stat-card.green::before {
+            background: linear-gradient(90deg, var(--accent-success), #86efac);
+        }
+
+        .stat-card.blue::before {
+            background: linear-gradient(90deg, var(--accent-info), #93c5fd);
+        }
+
+        .stat-card.red::before {
+            background: linear-gradient(90deg, var(--accent-danger), #fca5a5);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 8px 0 4px;
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            opacity: 0.1;
+        }
+
+        /* ===== CHARTS ===== */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ===== TABLE ===== */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(45, 50, 80, 0.5);
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .badge-processing {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .badge-shipped {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+        }
+
+        .badge-delivered {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+        }
+
+        .badge-cancelled {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        .badge-admin {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        .badge-user {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        .btn-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .btn-icon.edit:hover {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-icon.del:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-icon.view:hover {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 560px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-box.wide {
+            max-width: 780px;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .form-control option {
+            background: var(--bg-secondary);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        /* ===== ALERT ===== */
+        .alert-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            animation: slideInRight 0.3s ease;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.success {
+            border-color: rgba(34, 197, 94, 0.4);
+        }
+
+        .toast.error {
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .toast.info {
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .toast .t-icon {
+            font-size: 18px;
+        }
+
+        .toast.success .t-icon {
+            color: var(--accent-success);
+        }
+
+        .toast.error .t-icon {
+            color: var(--accent-danger);
+        }
+
+        .toast.info .t-icon {
+            color: var(--accent-info);
+        }
+
+        /* ===== ORDER TIMELINE ===== */
+        .timeline {
+            padding: 8px 0;
+        }
+
+        .timeline-step {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 30px;
+            bottom: -8px;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-step.done::after {
+            background: var(--accent-success);
+        }
+
+        .timeline-dot {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            z-index: 1;
+        }
+
+        .timeline-step.done .timeline-dot {
+            background: var(--accent-success);
+            border-color: var(--accent-success);
+            color: white;
+        }
+
+        .timeline-step.current .timeline-dot {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .timeline-body {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .timeline-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ===== SEARCH / FILTER BAR ===== */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-input-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-input-wrap i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px 9px 36px;
+            color: var(--text-primary);
+            font-size: 13px;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .filter-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 14px;
+            color: var(--text-primary);
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-select option {
+            background: var(--bg-secondary);
+        }
+
+        /* ===== PRODUCT IMAGE ===== */
+        .product-thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: var(--bg-secondary);
+        }
+
+        .product-thumb-placeholder {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== PAYMENT INFO ===== */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .payment-method-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .payment-method-card:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .payment-method-card.selected {
+            border-color: var(--accent-primary);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        .payment-method-card i {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .payment-method-card span {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* ===== PRODUCT STOCK WARNING ===== */
+        .stock-low {
+            color: var(--accent-danger);
+            font-weight: 600;
+        }
+
+        .stock-ok {
+            color: var(--accent-success);
+            font-weight: 600;
+        }
+
+        /* ===== ECOMMERCE ADMIN LIGHT THEME ===== */
+        :root {
+            --bg-primary: #f5f7f8;
+            --bg-secondary: #fff;
+            --bg-card: #fff;
+            --bg-hover: #f2f6f4;
+            --accent-primary: #176b57;
+            --accent-secondary: #e87935;
+            --accent-success: #16845f;
+            --accent-danger: #d84b4b;
+            --accent-warning: #b7791f;
+            --accent-info: #3975c6;
+            --text-primary: #1c3028;
+            --text-secondary: #62736b;
+            --text-muted: #89958f;
+            --border: #e3eae6;
+            --shadow: 0 4px 18px rgba(29, 55, 43, .06)
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary)
+        }
+
+        .sidebar {
+            background: #fff;
+            border-color: #e5ebe8;
+            box-shadow: 3px 0 16px rgba(27, 54, 41, .025)
+        }
+
+        .sidebar-logo {
+            border-color: #e9efec
+        }
+
+        .sidebar-logo .logo-icon {
+            background: linear-gradient(135deg, #176b57, #4d9b79)
+        }
+
+        .sidebar-logo .logo-text {
+            background: linear-gradient(135deg, #176b57, #36916d);
+            -webkit-background-clip: text
+        }
+
+        .nav-item:hover {
+            background: #f3f7f5;
+            color: #243b31
+        }
+
+        .nav-item.active {
+            background: #edf6f1;
+            color: #176b57;
+            border-left-color: #176b57
+        }
+
+        .admin-profile {
+            background: #f5f8f6
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, .95);
+            border-color: #e4ebe7;
+            box-shadow: 0 2px 10px rgba(25, 52, 40, .035)
+        }
+
+        .content {
+            background: var(--bg-primary)
+        }
+
+        .stat-card,
+        .chart-card,
+        .table-card,
+        .card,
+        .modal-content,
+        .product-card,
+        .order-card {
+            background: #fff;
+            border-color: #e4ebe7;
+            box-shadow: var(--shadow)
+        }
+
+        .stat-card:hover,
+        .product-card:hover {
+            border-color: #c8ddd2;
+            box-shadow: 0 9px 23px rgba(27, 83, 58, .09)
+        }
+
+        .table-wrap table {
+            background: #fff
+        }
+
+        thead,
+        th {
+            background: #f7f9f8;
+            color: #718078;
+            border-color: #e6ece9
+        }
+
+        td {
+            color: #46584f;
+            border-color: #edf1ef
+        }
+
+        tr:hover td {
+            background: #fafcfb
+        }
+
+        .form-control,
+        .form-select,
+        input,
+        select,
+        textarea {
+            background: #fff;
+            color: #283b32;
+            border-color: #dfe7e2
+        }
+
+        .form-control:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #70aa92;
+            box-shadow: 0 0 0 3px #176b5714
+        }
+
+        .btn-primary,
+        .topbar .btn-primary {
+            background: #176b57;
+            color: #fff
+        }
+
+        .btn-primary:hover,
+        .topbar .btn-primary:hover {
+            background: #105743
+        }
+
+        .btn-outline {
+            color: #43574d;
+            border-color: #dbe5df;
+            background: #fff
+        }
+
+        .btn-outline:hover {
+            background: #f3f7f5
+        }
+
+        .badge {
+            box-shadow: none
+        }
+
+        .chart-container {
+            background: #fff
+        }
+
+        .modal-overlay {
+            background: rgba(21, 39, 31, .42)
+        }
+
+        .modal {
+            background: #fff;
+            color: #24382e;
+            border-color: #e2eae5;
+            box-shadow: 0 20px 60px rgba(22, 47, 35, .2)
+        }
+
+        .sidebar-footer {
+            border-color: #e5ebe8
+        }
+
+        .btn-logout {
+            background: #fff4f2;
+            color: #c34e42;
+            border-color: #f3d8d3
+        }
+
+        .alert-toast .toast {
+            background: #fff;
+            color: #31443a;
+            border-color: #e1e9e4;
+            box-shadow: 0 8px 22px rgba(28, 53, 42, .13)
+        }
+
+        .alert-toast .toast {
+            background: rgba(13, 18, 32, 0.95);
+            color: #f1f5f9;
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+    <style>
+        /* ===== PREMIUM ADMIN DARK THEME ===== */
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --bg-primary: #070b12;
+            --bg-secondary: #0c1220;
+            --bg-card: #111827;
+            --bg-hover: #1a2235;
+            --accent-primary: #7c3aed;
+            --accent-secondary: #f59e0b;
+            --accent-success: #10b981;
+            --accent-danger: #ef4444;
+            --accent-warning: #f59e0b;
+            --accent-info: #3b82f6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #475569;
+            --border: rgba(255, 255, 255, 0.06);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background: var(--bg-primary) !important;
+            color: var(--text-primary) !important;
+            font-family: 'Be Vietnam Pro', 'Inter', sans-serif !important;
+        }
+
+        /* Background ambient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 0% 0%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            background: rgba(12, 18, 32, 0.98) !important;
+            border-right: 1px solid rgba(124, 58, 237, 0.15) !important;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5) !important;
+            backdrop-filter: blur(20px);
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            border-bottom-color: rgba(124, 58, 237, 0.15) !important;
+            padding: 28px 20px !important;
+        }
+
+        .sidebar-logo .logo-icon {
+            background: linear-gradient(135deg, #7c3aed, #a855f7) !important;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4) !important;
+        }
+
+        .sidebar-logo .logo-text {
+            background: linear-gradient(135deg, #a855f7, #7c3aed) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        .sidebar-logo .logo-sub {
+            color: var(--text-muted) !important;
+        }
+
+        .nav-section-title {
+            color: var(--text-muted) !important;
+            font-size: 9px !important;
+            letter-spacing: 2px !important;
+        }
+
+        .nav-item {
+            color: var(--text-secondary) !important;
+            border-radius: 10px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .nav-item:hover {
+            background: rgba(124, 58, 237, 0.1) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.08)) !important;
+            color: #a855f7 !important;
+            border-left-color: #7c3aed !important;
+            box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.2);
+        }
+
+        .admin-profile {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            border-radius: 10px !important;
+        }
+
+        .admin-avatar {
+            background: linear-gradient(135deg, #7c3aed, #a855f7) !important;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
+        }
+
+        .sidebar-footer {
+            border-top-color: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.08) !important;
+            color: #f87171 !important;
+            border-color: rgba(239, 68, 68, 0.2) !important;
+            border-radius: 10px !important;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.15) !important;
+        }
+
+        /* ===== TOPBAR ===== */
+        .topbar {
+            background: rgba(7, 11, 18, 0.9) !important;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.15) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(20px) !important;
+        }
+
+        .topbar-title h1 {
+            background: linear-gradient(135deg, #f1f5f9, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .topbar-title p {
+            color: var(--text-secondary) !important;
+        }
+
+        /* ===== CONTENT ===== */
+        .content {
+            background: transparent !important;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== STAT CARDS ===== */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease !important;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px) !important;
+            border-color: rgba(124, 58, 237, 0.3) !important;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(124, 58, 237, 0.2) !important;
+        }
+
+        .stat-card.purple::before {
+            background: linear-gradient(90deg, #7c3aed, #a855f7) !important;
+            height: 2px !important;
+        }
+
+        .stat-card.orange::before {
+            background: linear-gradient(90deg, #f59e0b, #ef4444) !important;
+            height: 2px !important;
+        }
+
+        .stat-card.green::before {
+            background: linear-gradient(90deg, #10b981, #06b6d4) !important;
+            height: 2px !important;
+        }
+
+        .stat-card.blue::before {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6) !important;
+            height: 2px !important;
+        }
+
+        .stat-card.red::before {
+            background: linear-gradient(90deg, #ef4444, #f97316) !important;
+            height: 2px !important;
+        }
+
+        .stat-label {
+            color: var(--text-muted) !important;
+            font-size: 11px !important;
+            letter-spacing: 0.8px !important;
+        }
+
+        .stat-value {
+            color: var(--text-primary) !important;
+            font-weight: 900 !important;
+        }
+
+        .stat-sub {
+            color: var(--text-secondary) !important;
+        }
+
+        /* ===== CARDS ===== */
+        .card,
+        .chart-card,
+        .table-card,
+        .modal-content,
+        .product-card,
+        .order-card {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-title {
+            color: var(--text-primary) !important;
+            font-weight: 700 !important;
+        }
+
+        .card-sub {
+            color: var(--text-muted) !important;
+        }
+
+        /* ===== TABLE ===== */
+        .table-wrap table {
+            background: transparent !important;
+        }
+
+        thead,
+        th {
+            background: rgba(255, 255, 255, 0.02) !important;
+            color: var(--text-muted) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        td {
+            color: var(--text-secondary) !important;
+            border-color: rgba(255, 255, 255, 0.04) !important;
+        }
+
+        tr:hover td {
+            background: rgba(124, 58, 237, 0.05) !important;
+        }
+
+        /* ===== FORMS ===== */
+        .form-control,
+        .form-select,
+        input,
+        select,
+        textarea,
+        .search-input,
+        .filter-select {
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: var(--text-primary) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            border-radius: 10px !important;
+        }
+
+        .form-control:focus,
+        input:focus,
+        select:focus,
+        textarea:focus,
+        .search-input:focus {
+            border-color: rgba(124, 58, 237, 0.5) !important;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1) !important;
+        }
+
+        .form-label {
+            color: var(--text-secondary) !important;
+        }
+
+        select option {
+            background: #111827 !important;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-primary,
+        .topbar .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #a855f7) !important;
+            color: #fff !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
+            border-radius: 10px !important;
+        }
+
+        .btn-primary:hover,
+        .topbar .btn-primary:hover {
+            background: linear-gradient(135deg, #6d28d9, #9333ea) !important;
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5) !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: var(--text-secondary) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            border-radius: 10px !important;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .btn-outline {
+            color: var(--text-secondary) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            background: rgba(255, 255, 255, 0.04) !important;
+            border-radius: 10px !important;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(124, 58, 237, 0.4) !important;
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            box-shadow: none !important;
+            font-weight: 600 !important;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.7) !important;
+            backdrop-filter: blur(8px) !important;
+        }
+
+        .modal,
+        .modal-box {
+            background: #111827 !important;
+            color: var(--text-primary) !important;
+            border: 1px solid rgba(124, 58, 237, 0.2) !important;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(124, 58, 237, 0.1) !important;
+        }
+
+        .modal-title {
+            color: var(--text-primary) !important;
+        }
+
+        /* ===== TOAST ===== */
+        .toast,
+        .alert-toast .toast {
+            background: rgba(13, 18, 32, 0.95) !important;
+            color: var(--text-primary) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5) !important;
+            backdrop-filter: blur(20px) !important;
+        }
+
+        /* ===== PRODUCT THUMB ===== */
+        .product-thumb-placeholder {
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: var(--text-muted) !important;
+        }
+
+        /* ===== CHARTS ===== */
+        .chart-container {
+            background: transparent !important;
+        }
+
+        /* ===== ICON BUTTONS ===== */
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            color: var(--text-secondary) !important;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        .btn-icon.edit:hover {
+            background: rgba(59, 130, 246, 0.15) !important;
+            color: #60a5fa !important;
+            border-color: rgba(59, 130, 246, 0.3) !important;
+        }
+
+        .btn-icon.del:hover {
+            background: rgba(239, 68, 68, 0.15) !important;
+            color: #f87171 !important;
+            border-color: rgba(239, 68, 68, 0.3) !important;
+        }
+
+        .btn-icon.view:hover {
+            background: rgba(16, 185, 129, 0.15) !important;
+            color: #34d399 !important;
+            border-color: rgba(16, 185, 129, 0.3) !important;
+        }
+
+        /* ===== NAV BADGE ===== */
+        .nav-item .nav-badge {
+            background: linear-gradient(135deg, #ef4444, #f97316) !important;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4) !important;
+        }
+
+        /* ===== STOCK COLORS ===== */
+        .stock-low {
+            color: #f87171 !important;
+        }
+
+        .stock-ok {
+            color: #34d399 !important;
+        }
+
+        /* ===== LOADING ===== */
+        .spinner {
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            border-top-color: #a855f7 !important;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02) !important;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(124, 58, 237, 0.3) !important;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(124, 58, 237, 0.5) !important;
+        }
+
+        /* ===== TIMELINE ===== */
+        .timeline-dot {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* ===== MICRO ANIMATIONS ===== */
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .stat-card {
+            animation: fadeInRight 0.4s ease both;
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.08s;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.16s;
+        }
+
+        .stat-card:nth-child(4) {
+            animation-delay: 0.24s;
+        }
+
+        /* ===== MOBILE ===== */
+        @media(max-width: 768px) {
+            .sidebar {
+                background: rgba(7, 11, 18, 0.99) !important;
+            }
+        }
+    </style>
+    <style>
+        :root {
+            --bg-primary: #f5f7f5;
+            --bg-secondary: #fff;
+            --bg-card: #fff;
+            --bg-hover: #edf5f0;
+            --accent-primary: #36a67b;
+            --accent-secondary: #ee8546;
+            --accent-success: #38b981;
+            --text-primary: #20372e;
+            --text-secondary: #687a72;
+            --text-muted: #85938c;
+            --border: #e5ece8;
+            --shadow: 0 12px 34px rgba(31, 59, 46, .08);
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+            background: #f5f7f5 !important;
+            color: #20372e !important;
+            letter-spacing: .05px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .sidebar-logo .logo-text,
+        .page-title,
+        .card-title {
+            font-family: 'Outfit', 'Be Vietnam Pro', sans-serif;
+        }
+
+        body::before {
+            background: radial-gradient(ellipse at 0 0, rgba(54, 166, 123, .035), transparent 48%), radial-gradient(ellipse at 100% 100%, rgba(238, 133, 70, .025), transparent 45%) !important;
+        }
+
+        .sidebar,
+        .sidebar.open {
+            background: #fff !important;
+            color: #20372e !important;
+            border-right: 1px solid #e5ece8 !important;
+            box-shadow: 4px 0 20px rgba(31, 59, 46, .04) !important;
+        }
+
+        .sidebar-logo {
+            border-bottom-color: #edf1ef !important;
+        }
+
+        .sidebar-logo .logo-icon {
+            background: linear-gradient(135deg, #36a67b, #176b57) !important;
+            box-shadow: 0 8px 20px rgba(54, 166, 123, .18);
+        }
+
+        .sidebar-logo .logo-text {
+            background: linear-gradient(135deg, #176b57, #36a67b) !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        .sidebar-logo .logo-sub,
+        .nav-section-title {
+            color: #85938c !important;
+        }
+
+        .nav-item {
+            color: #687a72 !important;
+        }
+
+        .nav-item {
+            border-radius: 10px;
+            transition: background .2s, color .2s, transform .2s !important;
+        }
+
+        .nav-item:hover {
+            transform: translateX(3px);
+            background: #f0f7f2 !important;
+            color: #176b57 !important;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, #e6f3eb, #f5faf6) !important;
+            color: #176b57 !important;
+        }
+
+        .admin-profile {
+            background: #f4f7f5 !important;
+            color: #20372e !important;
+        }
+
+        .sidebar-footer {
+            border-top-color: #edf1ef !important;
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, .92) !important;
+            border-bottom-color: #e5ece8 !important;
+            box-shadow: 0 4px 18px rgba(31, 59, 46, .035);
+        }
+
+        .topbar-title h1,
+        .card-title,
+        .stat-value {
+            color: #20372e !important;
+        }
+
+        .topbar-title p,
+        .card-sub,
+        .stat-label,
+        .stat-sub {
+            color: #687a72 !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #27966d, #176b57) !important;
+            box-shadow: 0 6px 16px rgba(30, 139, 97, .17);
+            transition: transform .2s, box-shadow .2s, filter .2s !important;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(30, 139, 97, .26) !important;
+            filter: brightness(1.06);
+        }
+
+        .stat-card,
+        .card {
+            background: #fff !important;
+            color: #20372e !important;
+            border: 1px solid #e5ece8 !important;
+            box-shadow: 0 8px 24px rgba(31, 59, 46, .055) !important;
+            transition: transform .22s, border-color .22s, box-shadow .22s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: #b9d8c6 !important;
+            box-shadow: 0 16px 32px rgba(31, 90, 61, .11) !important;
+        }
+
+        .card {
+            border-radius: 14px;
+        }
+
+        .card-header {
+            border-bottom-color: #edf1ef !important;
+        }
+
+        table {
+            color: #35483e !important;
+        }
+
+        thead th {
+            color: #718078 !important;
+            border-bottom-color: #e8eeea !important;
+        }
+
+        tbody td {
+            color: #45564e !important;
+            border-bottom-color: #edf1ef !important;
+        }
+
+        .page.active {
+            animation: adminPageEnter .28s ease both;
+        }
+
+        @keyframes adminPageEnter {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        tr {
+            transition: background .16s;
+        }
+
+        tbody tr:hover {
+            background: #f3f8f4 !important;
+        }
+
+        .btn-icon {
+            transition: transform .18s, background .18s, color .18s;
+        }
+
+        .btn-icon:hover {
+            transform: translateY(-2px);
+        }
+
+        .search-input,
+        .filter-select,
+        .form-control,
+        input,
+        select,
+        textarea {
+            background: #fff !important;
+            color: #35483e !important;
+            border-color: #dfe7e2 !important;
+        }
+
+        .search-input::placeholder,
+        input::placeholder,
+        textarea::placeholder {
+            color: #9aa69f !important;
+        }
+
+        .modal-box {
+            background: #fff !important;
+            color: #20372e !important;
+            border: 1px solid #e5ece8 !important;
+            box-shadow: 0 24px 65px rgba(22, 48, 34, .18) !important;
+        }
+
+        .modal-title,
+        .form-label {
+            color: #2c4136 !important;
+        }
+
+        .filter-bar {
+            background: transparent !important;
+        }
+
+        .table-wrap {
+            background: #fff !important;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f5f7f5 !important;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c9d8ce !important;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #96b5a1 !important;
+        }
+
+        input,
+        select,
+        textarea {
+            transition: border-color .2s, box-shadow .2s, background .2s !important;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: rgba(72, 185, 133, .55) !important;
+            box-shadow: 0 0 0 3px rgba(72, 185, 133, .12) !important;
+        }
+
+        @media(prefers-reduced-motion:reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+    <style>
+        .sidebar-logo .logo-text {
+            background: none !important;
+            -webkit-text-fill-color: #176b57 !important;
+            color: #176b57 !important;
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOAST CONTAINER -->
+    <div class="alert-toast" id="toastContainer"></div>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">🛒</div>
+            <div>
+                <div class="logo-text">YODY</div>
+                <div class="logo-sub">Admin Dashboard</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Tổng quan</div>
+            <a class="nav-item active" id="nav-dashboard" href="#" onclick="showPage('dashboard')">
+                <i class="bi bi-speedometer2 nav-icon"></i>Dashboard
+            </a>
+
+            <div class="nav-section-title">Quản lý</div>
+            <a class="nav-item" id="nav-products" href="#" onclick="showPage('products')">
+                <i class="bi bi-box-seam nav-icon"></i>Sản phẩm
+            </a>
+            <a class="nav-item" id="nav-categories" href="#" onclick="showPage('categories')">
+                <i class="bi bi-tags nav-icon"></i>Danh mục
+            </a>
+            <a class="nav-item" id="nav-orders" href="#" onclick="showPage('orders')">
+                <i class="bi bi-receipt nav-icon"></i>Đơn hàng
+                <span class="nav-badge" id="pendingBadge">0</span>
+            </a>
+            <a class="nav-item" id="nav-shipping" href="#" onclick="showPage('shipping')">
+                <i class="bi bi-truck nav-icon"></i>Vận đơn
+            </a>
+
+            <div class="nav-section-title">Hệ thống</div>
+            <a class="nav-item" href="/index.html">
+                <i class="bi bi-shop nav-icon"></i>Về cửa hàng
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="admin-avatar" id="adminAvatarText">A</div>
+                <div>
+                    <div style="font-size:13px; font-weight:600;" id="adminName">Admin</div>
+                    <div style="font-size:11px; color:var(--text-muted);">Quản trị viên</div>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="logout()">
+                <i class="bi bi-box-arrow-left"></i> Đăng xuất
+            </button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-title">
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSubtitle">Chào mừng trở lại, <span id="adminGreet">Admin</span>!</p>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn-primary" id="topbarAction" style="display:none">
+                    <i class="bi bi-plus-lg"></i> Thêm mới
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- =================== DASHBOARD PAGE =================== -->
+            <div class="page active" id="page-dashboard">
+                <!-- Stats -->
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card purple">
+                        <div class="stat-label">Tổng doanh thu</div>
+                        <div class="stat-value" id="statRevenue">--</div>
+                        <div class="stat-sub" id="statRevenueToday">Hôm nay: --</div>
+                        <i class="bi bi-currency-exchange stat-icon"></i>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-label">Tổng đơn hàng</div>
+                        <div class="stat-value" id="statOrders">--</div>
+                        <div class="stat-sub" id="statPending">Chờ xử lý: --</div>
+                        <i class="bi bi-receipt stat-icon"></i>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-label">Sản phẩm</div>
+                        <div class="stat-value" id="statProducts">--</div>
+                        <div class="stat-sub">Trong kho</div>
+                        <i class="bi bi-box-seam stat-icon"></i>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-label">Người dùng</div>
+                        <div class="stat-value" id="statUsers">--</div>
+                        <div class="stat-sub">Đã đăng ký</div>
+                        <i class="bi bi-people stat-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-row">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">Doanh thu 6 tháng gần nhất</div>
+                                <div class="card-sub">Chỉ tính đơn đã giao thành công</div>
+                            </div>
+                        </div>
+                        <canvas id="revenueChart" height="120"></canvas>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Trạng thái đơn hàng</div>
+                        </div>
+                        <canvas id="statusChart" height="200"></canvas>
+                        <div id="statusLegend" style="margin-top:12px;"></div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Đơn hàng gần đây</div>
+                            <div class="card-sub">10 đơn hàng mới nhất</div>
+                        </div>
+                        <button class="btn-secondary" onclick="showPage('orders')">
+                            <i class="bi bi-arrow-right"></i> Xem tất cả
+                        </button>
+                    </div>
+                    <div class="table-wrap">
+                        <table id="recentOrdersTable">
+                            <thead>
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Thanh toán</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày đặt</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentOrdersBody">
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="loading">
+                                            <div class="spinner"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =================== PRODUCTS PAGE =================== -->
+            <div class="page" id="page-products">
+                <div class="filter-bar">
+                    <div class="search-input-wrap">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="search-input" id="productSearch" placeholder="Tìm kiếm sản phẩm..."
+                            oninput="filterProducts()">
+                    </div>
+                    <select class="filter-select" id="productCategoryFilter" onchange="filterProducts()">
+                        <option value="">Tất cả danh mục</option>
+                    </select>
+                    <button class="btn-primary" onclick="openProductModal()">
+                        <i class="bi bi-plus-lg"></i> Thêm sản phẩm
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Danh mục</th>
+                                    <th>Giá</th>
+                                    <th>Tồn kho</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="loading">
+                                            <div class="spinner"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =================== CATEGORIES PAGE =================== -->
+            <div class="page" id="page-categories">
+                <div class="filter-bar">
+                    <div class="search-input-wrap">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="search-input" id="categorySearch" placeholder="Tìm kiếm danh mục..."
+                            oninput="filterCategories()">
+                    </div>
+                    <button class="btn-primary" onclick="openCategoryModal()">
+                        <i class="bi bi-plus-lg"></i> Thêm danh mục
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width:80px">Mã</th>
+                                    <th>Tên danh mục</th>
+                                    <th>Mô tả</th>
+                                    <th style="width:140px">Số sản phẩm</th>
+                                    <th style="width:120px">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody">
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="loading">
+                                            <div class="spinner"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =================== ORDERS PAGE =================== -->
+            <div class="page" id="page-orders">
+                <div class="filter-bar">
+                    <div class="search-input-wrap">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="search-input" id="orderSearch"
+                            placeholder="Tìm theo khách hàng, mã đơn..." oninput="filterOrders()">
+                    </div>
+                    <select class="filter-select" id="orderStatusFilter" onchange="filterOrders()">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="PENDING">Chờ xác nhận</option>
+                        <option value="PROCESSING">Đang xử lý</option>
+                        <option value="SHIPPED">Đã giao vận chuyển</option>
+                        <option value="DELIVERED">Đã giao thành công</option>
+                        <option value="CANCELLED">Đã hủy</option>
+                    </select>
+                </div>
+
+                <div class="card">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Thanh toán</th>
+                                    <th>Vận đơn</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <tr>
+                                    <td colspan="8">
+                                        <div class="loading">
+                                            <div class="spinner"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =================== SHIPPING PAGE =================== -->
+            <div class="page" id="page-shipping">
+                <div class="filter-bar">
+                    <div class="search-input-wrap">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="search-input" id="shippingSearch"
+                            placeholder="Tìm mã vận đơn hoặc khách hàng..." oninput="filterShipping()">
+                    </div>
+                    <select class="filter-select" id="shippingStatusFilter" onchange="filterShipping()">
+                        <option value="SHIPPED,PROCESSING,PENDING">Đang vận chuyển</option>
+                        <option value="">Tất cả</option>
+                        <option value="DELIVERED">Đã giao</option>
+                        <option value="CANCELLED">Đã hủy</option>
+                    </select>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Quản lý vận đơn</div>
+                        <div class="card-sub">Cập nhật trạng thái giao hàng và mã tracking</div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Địa chỉ giao hàng</th>
+                                    <th>Mã vận đơn</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Cập nhật</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shippingTableBody">
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="loading">
+                                            <div class="spinner"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /content -->
+    </main>
+
+    <!-- =================== MODALS =================== -->
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-box">
+            <div class="modal-title">
+                <span id="productModalTitle">Thêm sản phẩm mới</span>
+                <button class="btn-icon" onclick="closeModal('productModal')"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <form id="productForm" onsubmit="submitProduct(event)">
+                <input type="hidden" id="productId">
+                <div class="form-group">
+                    <label class="form-label">Tên sản phẩm *</label>
+                    <input type="text" class="form-control" id="productName" required
+                        placeholder="Nhập tên sản phẩm...">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Giá bán (₫) *</label>
+                        <input type="number" class="form-control" id="productPrice" required min="0" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số lượng kho *</label>
+                        <input type="number" class="form-control" id="productStock" required min="0" placeholder="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Danh mục *</label>
+                    <select class="form-control" id="productCategory" required>
+                        <option value="">-- Chọn danh mục --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="productImage">Tệp hình ảnh</label>
+                    <input type="file" class="form-control" id="productImage"
+                        accept="image/jpeg,image/png,image/webp,image/gif" onchange="previewProductImage(event)">
+                    <input type="hidden" id="productImageUrl">
+                    <div id="productImagePreview" style="display:none;margin-top:10px;align-items:center;gap:10px">
+                        <img alt="Ảnh sản phẩm xem trước"
+                            style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+                        <span style="font-size:12px;color:var(--text-muted)">Ảnh xem trước</span>
+                    </div>
+                    <small style="display:block;margin-top:6px;color:var(--text-muted)">JPG, PNG, WEBP hoặc GIF; tối đa
+                        5 MB. Để trống khi sửa nếu muốn giữ ảnh hiện tại.</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mô tả sản phẩm</label>
+                    <textarea class="form-control" id="productDesc" rows="3"
+                        placeholder="Mô tả chi tiết về sản phẩm..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('productModal')">Hủy</button>
+                    <button type="submit" class="btn-primary" id="productSubmitBtn">
+                        <i class="bi bi-check-lg"></i> Lưu sản phẩm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal-overlay" id="categoryModal">
+        <div class="modal-box">
+            <div class="modal-title">
+                <span id="categoryModalTitle">Thêm danh mục mới</span>
+                <button class="btn-icon" onclick="closeModal('categoryModal')"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <form id="categoryForm" onsubmit="submitCategory(event)">
+                <input type="hidden" id="categoryId">
+                <div class="form-group">
+                    <label class="form-label">Tên danh mục *</label>
+                    <input type="text" class="form-control" id="categoryName" required
+                        placeholder="Nhập tên danh mục (VD: Quần áo, Phụ kiện...)">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mô tả danh mục</label>
+                    <textarea class="form-control" id="categoryDesc" rows="3"
+                        placeholder="Mô tả về nhóm sản phẩm này..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('categoryModal')">Hủy</button>
+                    <button type="submit" class="btn-primary" id="categorySubmitBtn">
+                        <i class="bi bi-check-lg"></i> Lưu danh mục
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-box wide">
+            <div class="modal-title">
+                <span id="orderModalTitle">Chi tiết đơn hàng</span>
+                <button class="btn-icon" onclick="closeModal('orderModal')"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div id="orderModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Update Status Modal -->
+    <div class="modal-overlay" id="statusModal">
+        <div class="modal-box">
+            <div class="modal-title">
+                <span>Cập nhật trạng thái đơn hàng</span>
+                <button class="btn-icon" onclick="closeModal('statusModal')"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <input type="hidden" id="statusOrderId">
+            <div class="form-group">
+                <label class="form-label">Trạng thái đơn hàng</label>
+                <select class="form-control" id="statusSelect">
+                    <option value="PENDING">⏳ Chờ xác nhận</option>
+                    <option value="PROCESSING">🔧 Đang xử lý</option>
+                    <option value="SHIPPED">🚚 Đã giao vận chuyển</option>
+                    <option value="DELIVERED">✅ Đã giao thành công</option>
+                    <option value="CANCELLED">❌ Đã hủy</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Mã vận đơn (Tracking Number)</label>
+                <input type="text" class="form-control" id="trackingInput" placeholder="VD: VN123456789">
+            </div>
+            <div class="form-actions">
+                <button class="btn-secondary" onclick="closeModal('statusModal')">Hủy</button>
+                <button class="btn-primary" onclick="submitStatusUpdate()">
+                    <i class="bi bi-check-lg"></i> Cập nhật
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== SCRIPTS =================== -->
+    <script>
+        const API = 'http://localhost:8080/api';
+        let token = localStorage.getItem('token');
+        let allOrders = [];
+        let allProducts = [];
+        let allCategories = [];
+        let revenueChartInst = null;
+        let statusChartInst = null;
+        let productImagePreviewObjectUrl = null;
+
+        // ===== AUTH GUARD =====
+        async function checkAdminAccess() {
+            if (!token) {
+                alert('Vui lòng đăng nhập bằng tài khoản Admin để truy cập trang này.');
+                window.location.href = '/index.html';
+                return false;
+            }
+
+            // Use the backend as the source of truth. The cached roles can be stale if
+            // ROLE_ADMIN was added to this account after its last login.
+            try {
+                const response = await fetch(`${API}/admin/dashboard`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('roles');
+                    alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                    window.location.href = '/index.html';
+                    return false;
+                }
+                if (response.status === 403) {
+                    alert('Tài khoản hiện tại chưa có quyền Admin. Hãy đăng nhập bằng tài khoản admin hoặc liên hệ quản trị viên.');
+                    window.location.href = '/index.html';
+                    return false;
+                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const dashboard = await response.json();
+                const roles = JSON.parse(localStorage.getItem('roles') || '[]');
+                if (!roles.includes('ROLE_ADMIN')) {
+                    roles.push('ROLE_ADMIN');
+                    localStorage.setItem('roles', JSON.stringify(roles));
+                }
+                return dashboard;
+            } catch (error) {
+                alert('Không thể xác minh quyền Admin với máy chủ. Hãy kiểm tra backend đang chạy rồi thử lại.');
+                return false;
+            }
+
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/index.html';
+        }
+
+        // ===== NAVIGATION =====
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(`page-${page}`).classList.add('active');
+            const navEl = document.getElementById(`nav-${page}`);
+            if (navEl) navEl.classList.add('active');
+
+            const titles = {
+                dashboard: ['Dashboard', 'Tổng quan hệ thống'],
+                products: ['Quản lý sản phẩm', 'Thêm, sửa, xóa sản phẩm'],
+                categories: ['Quản lý danh mục', 'Thêm, sửa, xóa danh mục sản phẩm'],
+                orders: ['Quản lý đơn hàng', 'Xem và xử lý đơn hàng'],
+                shipping: ['Quản lý vận đơn', 'Theo dõi và cập nhật trạng thái giao hàng'],
+            };
+            const t = titles[page] || ['', ''];
+            document.getElementById('pageTitle').textContent = t[0];
+            document.getElementById('pageSubtitle').textContent = t[1];
+
+            const topAction = document.getElementById('topbarAction');
+            if (page === 'products') {
+                topAction.style.display = 'flex';
+                topAction.innerHTML = '<i class="bi bi-plus-lg"></i> Thêm sản phẩm';
+                topAction.onclick = () => openProductModal();
+            } else if (page === 'categories') {
+                topAction.style.display = 'flex';
+                topAction.innerHTML = '<i class="bi bi-plus-lg"></i> Thêm danh mục';
+                topAction.onclick = () => openCategoryModal();
+            } else {
+                topAction.style.display = 'none';
+            }
+
+            if (page === 'dashboard') loadDashboard();
+            if (page === 'products') loadProducts();
+            if (page === 'categories') loadCategories();
+            if (page === 'orders') loadOrders();
+            if (page === 'shipping') loadShipping();
+
+            return false;
+        }
+
+        // ===== TOAST =====
+        function toast(msg, type = 'info') {
+            const icons = { success: 'bi-check-circle-fill', error: 'bi-x-circle-fill', info: 'bi-info-circle-fill' };
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.innerHTML = `<i class="bi ${icons[type]} t-icon"></i><span>${msg}</span>`;
+            document.getElementById('toastContainer').appendChild(el);
+            setTimeout(() => el.remove(), 3500);
+        }
+
+        // ===== API HELPER =====
+        async function apiFetch(url, options = {}) {
+            const headers = { 'Content-Type': 'application/json', ...options.headers };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const res = await fetch(url, { ...options, headers });
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(text || `Lỗi ${res.status}`);
+            }
+            if (res.status === 204) return null;
+            return res.json();
+        }
+
+        // ===== MODAL =====
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        // ===== FORMAT =====
+        function fmtMoney(v) {
+            if (v == null) return '0 ₫';
+            return Number(v).toLocaleString('vi-VN') + ' ₫';
+        }
+        function fmtDate(d) {
+            if (!d) return '--';
+            return new Date(d).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function statusBadge(s) {
+            const map = {
+                PENDING: ['badge-pending', '⏳ Chờ xác nhận'],
+                PROCESSING: ['badge-processing', '🔧 Đang xử lý'],
+                SHIPPED: ['badge-shipped', '🚚 Đang vận chuyển'],
+                DELIVERED: ['badge-delivered', '✅ Đã giao'],
+                CANCELLED: ['badge-cancelled', '❌ Đã hủy'],
+            };
+            const [cls, label] = map[s] || ['badge-pending', s];
+            return `<span class="badge ${cls}">${label}</span>`;
+        }
+
+        function paymentBadge(m) {
+            const map = {
+                COD: '💵 COD',
+                BANK_TRANSFER: '🏦 Chuyển khoản',
+                MOMO: '📱 MoMo',
+                VNPAY: '💳 VNPay',
+            };
+            return map[m] || m || 'COD';
+        }
+
+        // =================== DASHBOARD ===================
+        async function loadDashboard(initialData = null) {
+            try {
+                const data = initialData || await apiFetch(`${API}/admin/dashboard`);
+
+                document.getElementById('statRevenue').textContent = fmtMoney(data.totalRevenue);
+                document.getElementById('statRevenueToday').textContent = `Hôm nay: ${fmtMoney(data.revenueToday)}`;
+                document.getElementById('statOrders').textContent = data.totalOrders;
+                document.getElementById('statPending').textContent = `Chờ xử lý: ${data.pendingOrders}`;
+                document.getElementById('statProducts').textContent = data.totalProducts;
+                document.getElementById('statUsers').textContent = data.totalUsers;
+                document.getElementById('pendingBadge').textContent = data.pendingOrders;
+
+                drawRevenueChart(data.revenueByMonth);
+                drawStatusChart(data.ordersByStatus);
+
+                // Recent orders
+                const orders = await apiFetch(`${API}/admin/orders`);
+                allOrders = orders;
+                renderRecentOrders(orders.slice(0, 10));
+
+            } catch (e) {
+                toast('Không thể tải dashboard: ' + e.message, 'error');
+            }
+        }
+
+        function drawRevenueChart(data) {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            if (revenueChartInst) revenueChartInst.destroy();
+
+            const labels = Object.keys(data).map(k => {
+                const [y, m] = k.split('-');
+                const d = new Date(y, m - 1);
+                return d.toLocaleDateString('vi-VN', { month: 'short', year: '2-digit' });
+            });
+            const values = Object.values(data).map(v => Number(v));
+
+            revenueChartInst = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Doanh thu (₫)',
+                        data: values,
+                        backgroundColor: 'rgba(108,99,255,0.6)',
+                        borderColor: '#6c63ff',
+                        borderWidth: 2,
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                        y: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#94a3b8', callback: v => (v >= 1000000 ? (v / 1000000).toFixed(1) + 'M' : v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v) + ' ₫' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function drawStatusChart(data) {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            if (statusChartInst) statusChartInst.destroy();
+
+            const labels = ['Chờ xác nhận', 'Đang xử lý', 'Đang vận chuyển', 'Đã giao', 'Đã hủy'];
+            const keys = ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+            const colors = ['#f59e0b', '#60a5fa', '#c084fc', '#4ade80', '#f87171'];
+            const values = keys.map(k => data[k] || 0);
+
+            statusChartInst = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{ data: values, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } }
+                    }
+                }
+            });
+
+            // Custom legend
+            const legend = document.getElementById('statusLegend');
+            legend.innerHTML = labels.map((l, i) => `
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px;">
+            <span style="width:10px;height:10px;border-radius:50%;background:${colors[i]};flex-shrink:0;"></span>
+            <span style="color:var(--text-secondary)">${l}</span>
+            <span style="margin-left:auto;font-weight:600;">${values[i]}</span>
+        </div>
+    `).join('');
+        }
+
+        function renderRecentOrders(orders) {
+            const tbody = document.getElementById('recentOrdersBody');
+            if (!orders || orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="bi bi-inbox"></i><p>Chưa có đơn hàng nào</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = orders.map(o => `
+        <tr>
+            <td><strong style="color:var(--accent-primary)">#${o.id}</strong></td>
+            <td>${o.customerUsername || '--'}</td>
+            <td style="color:var(--accent-secondary);font-weight:600">${fmtMoney(o.totalPrice)}</td>
+            <td style="font-size:12px;color:var(--text-secondary)">${paymentBadge(o.paymentMethod)}</td>
+            <td>${statusBadge(o.status)}</td>
+            <td style="font-size:12px;color:var(--text-muted)">${fmtDate(o.createdAt)}</td>
+            <td>
+                <button class="btn-icon view" onclick="viewOrderDetail(${o.id})" title="Xem chi tiết"><i class="bi bi-eye"></i></button>
+                <button class="btn-icon edit" onclick="openStatusModal(${o.id}, '${o.status}', '${o.trackingNumber || ''}')" title="Cập nhật"><i class="bi bi-pencil"></i></button>
+            </td>
+        </tr>
+    `).join('');
+        }
+
+        // =================== PRODUCTS ===================
+        async function loadProducts() {
+            try {
+                [allProducts, allCategories] = await Promise.all([
+                    apiFetch(`${API}/products`),
+                    apiFetch(`${API}/categories`)
+                ]);
+
+                // Fill category filter
+                const catFilter = document.getElementById('productCategoryFilter');
+                catFilter.innerHTML = '<option value="">Tất cả danh mục</option>' +
+                    allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+                renderProducts(allProducts);
+            } catch (e) {
+                toast('Không thể tải sản phẩm: ' + e.message, 'error');
+            }
+        }
+
+        function renderProducts(products) {
+            const tbody = document.getElementById('productsTableBody');
+            if (!products || products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="bi bi-box-seam"></i><p>Chưa có sản phẩm nào</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = products.map(p => `
+        <tr>
+            <td>
+                <div style="display:flex;align-items:center;gap:10px">
+                    ${p.imageUrl
+                    ? `<img src="${p.imageUrl}" class="product-thumb" onerror="this.style.display='none'">`
+                    : `<div class="product-thumb-placeholder"><i class="bi bi-image"></i></div>`
+                }
+                    <div>
+                        <div style="font-weight:600;font-size:13px">${p.name}</div>
+                        <div style="font-size:11px;color:var(--text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.description || ''}</div>
+                    </div>
+                </div>
+            </td>
+            <td><span class="badge badge-user">${p.categoryName || '--'}</span></td>
+            <td style="color:var(--accent-secondary);font-weight:700">${fmtMoney(p.price)}</td>
+            <td class="${p.stock <= 5 ? 'stock-low' : 'stock-ok'}">${p.stock} <span style="font-size:11px;font-weight:400;color:var(--text-muted)">${p.stock <= 5 ? '⚠️ Sắp hết' : ''}</span></td>
+            <td>
+                <button class="btn-icon edit" onclick="openProductModal(${JSON.stringify(p).replace(/"/g, '&quot;')})" title="Sửa"><i class="bi bi-pencil"></i></button>
+                <button class="btn-icon del" onclick="deleteProduct(${p.id}, '${p.name}')" title="Xóa"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+        }
+
+        function filterProducts() {
+            const search = document.getElementById('productSearch').value.toLowerCase();
+            const cat = document.getElementById('productCategoryFilter').value;
+            let filtered = allProducts.filter(p => {
+                const matchSearch = !search || p.name.toLowerCase().includes(search) || (p.description || '').toLowerCase().includes(search);
+                const matchCat = !cat || String(p.categoryId) === String(cat);
+                return matchSearch && matchCat;
+            });
+            renderProducts(filtered);
+        }
+
+        async function openProductModal(product = null) {
+            document.getElementById('productModalTitle').textContent = product ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới';
+            document.getElementById('productSubmitBtn').innerHTML = product ? '<i class="bi bi-check-lg"></i> Lưu thay đổi' : '<i class="bi bi-plus-lg"></i> Thêm sản phẩm';
+
+            if (!allCategories || allCategories.length === 0) {
+                try {
+                    allCategories = await apiFetch(`${API}/categories`);
+                } catch (_) { }
+            }
+
+            // Fill categories
+            const catSel = document.getElementById('productCategory');
+            if (!allCategories || allCategories.length === 0) {
+                catSel.innerHTML = '<option value="">Chưa có danh mục nào (Hãy tạo danh mục trước)</option>';
+            } else {
+                catSel.innerHTML = '<option value="">-- Chọn danh mục --</option>' +
+                    allCategories.map(c => `<option value="${c.id}" ${product && product.categoryId == c.id ? 'selected' : ''}>${c.name}</option>`).join('');
+            }
+
+            if (product) {
+                document.getElementById('productId').value = product.id;
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productPrice').value = product.price;
+                document.getElementById('productStock').value = product.stock;
+                document.getElementById('productImage').value = '';
+                document.getElementById('productImageUrl').value = product.imageUrl || '';
+                setProductImagePreview(product.imageUrl || '');
+                document.getElementById('productDesc').value = product.description || '';
+            } else {
+                document.getElementById('productForm').reset();
+                document.getElementById('productId').value = '';
+                document.getElementById('productImageUrl').value = '';
+                setProductImagePreview('');
+            }
+
+            openModal('productModal');
+        }
+
+        function setProductImagePreview(url) {
+            if (productImagePreviewObjectUrl) {
+                URL.revokeObjectURL(productImagePreviewObjectUrl);
+                productImagePreviewObjectUrl = null;
+            }
+            const preview = document.getElementById('productImagePreview');
+            const image = preview.querySelector('img');
+            if (!url) {
+                preview.style.display = 'none';
+                image.removeAttribute('src');
+                return;
+            }
+            image.src = url;
+            preview.style.display = 'flex';
+        }
+
+        function previewProductImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                event.target.value = '';
+                toast('Vui lòng chọn tệp hình ảnh.', 'error');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                event.target.value = '';
+                toast('Ảnh không được vượt quá 5 MB.', 'error');
+                return;
+            }
+            productImagePreviewObjectUrl = URL.createObjectURL(file);
+            document.getElementById('productImagePreview').querySelector('img').src = productImagePreviewObjectUrl;
+            document.getElementById('productImagePreview').style.display = 'flex';
+        }
+
+        async function uploadProductImage(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            const headers = {};
+            if (token) headers.Authorization = `Bearer ${token}`;
+            const response = await fetch(`${API}/products/images`, { method: 'POST', headers, body: formData });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.detail || error.message || `Không tải được ảnh (${response.status})`);
+            }
+            return (await response.json()).imageUrl;
+        }
+
+        async function submitProduct(e) {
+            e.preventDefault();
+            const id = document.getElementById('productId').value;
+            const imageFile = document.getElementById('productImage').files[0];
+            let imageUrl = document.getElementById('productImageUrl').value || null;
+
+            try {
+                if (imageFile) imageUrl = await uploadProductImage(imageFile);
+            } catch (err) {
+                toast('Lỗi tải ảnh: ' + err.message, 'error');
+                return;
+            }
+
+            const payload = {
+                name: document.getElementById('productName').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                stock: parseInt(document.getElementById('productStock').value),
+                categoryId: parseInt(document.getElementById('productCategory').value),
+                imageUrl,
+                description: document.getElementById('productDesc').value || null,
+            };
+
+            try {
+                if (id) {
+                    await apiFetch(`${API}/products/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
+                    toast('Cập nhật sản phẩm thành công!', 'success');
+                } else {
+                    await apiFetch(`${API}/products`, { method: 'POST', body: JSON.stringify(payload) });
+                    toast('Thêm sản phẩm thành công!', 'success');
+                }
+                closeModal('productModal');
+                loadProducts();
+            } catch (err) {
+                toast('Lỗi: ' + err.message, 'error');
+            }
+        }
+
+        async function deleteProduct(id, name) {
+            if (!confirm(`Bạn có chắc muốn xóa sản phẩm "${name}"?\nThao tác này không thể hoàn tác!`)) return;
+            try {
+                await apiFetch(`${API}/products/${id}`, { method: 'DELETE' });
+                toast(`Đã xóa sản phẩm "${name}"`, 'success');
+                loadProducts();
+            } catch (err) {
+                toast('Lỗi xóa sản phẩm: ' + err.message, 'error');
+            }
+        }
+
+        // =================== CATEGORIES ===================
+        async function loadCategories() {
+            try {
+                allCategories = await apiFetch(`${API}/categories`);
+                renderCategories(allCategories);
+                refreshCategoryDropdowns();
+            } catch (e) {
+                toast('Không thể tải danh mục: ' + e.message, 'error');
+            }
+        }
+
+        function renderCategories(categories) {
+            const tbody = document.getElementById('categoriesTableBody');
+            if (!categories || categories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="bi bi-tags"></i><p>Chưa có danh mục nào</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = categories.map(c => `
+        <tr>
+            <td><strong style="color:var(--accent-primary)">#${c.id}</strong></td>
+            <td>
+                <div style="font-weight:600;font-size:14px;color:var(--text-primary)">${c.name}</div>
+            </td>
+            <td style="font-size:13px;color:var(--text-secondary);max-width:320px">${c.description || '<span style="color:var(--text-muted);font-style:italic">Không có mô tả</span>'}</td>
+            <td>
+                <span class="badge ${(c.productCount || 0) > 0 ? 'badge-user' : 'badge-pending'}">${c.productCount || 0} sản phẩm</span>
+            </td>
+            <td>
+                <button class="btn-icon edit" onclick="openCategoryModal(${JSON.stringify(c).replace(/"/g, '&quot;')})" title="Sửa danh mục"><i class="bi bi-pencil"></i></button>
+                <button class="btn-icon del" onclick="deleteCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}')" title="Xóa danh mục"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+        }
+
+        function filterCategories() {
+            const search = (document.getElementById('categorySearch').value || '').toLowerCase();
+            const filtered = allCategories.filter(c => {
+                return !search || (c.name || '').toLowerCase().includes(search) || (c.description || '').toLowerCase().includes(search);
+            });
+            renderCategories(filtered);
+        }
+
+        function refreshCategoryDropdowns() {
+            const catFilter = document.getElementById('productCategoryFilter');
+            if (catFilter) {
+                const curVal = catFilter.value;
+                catFilter.innerHTML = '<option value="">Tất cả danh mục</option>' +
+                    allCategories.map(c => `<option value="${c.id}" ${curVal == c.id ? 'selected' : ''}>${c.name}</option>`).join('');
+            }
+            const productCategory = document.getElementById('productCategory');
+            if (productCategory && !document.getElementById('productId').value) {
+                productCategory.innerHTML = '<option value="">-- Chọn danh mục --</option>' +
+                    allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            }
+        }
+
+        function openCategoryModal(category = null) {
+            document.getElementById('categoryModalTitle').textContent = category ? 'Sửa danh mục' : 'Thêm danh mục mới';
+            document.getElementById('categorySubmitBtn').innerHTML = category ? '<i class="bi bi-check-lg"></i> Lưu thay đổi' : '<i class="bi bi-plus-lg"></i> Thêm danh mục';
+
+            if (category) {
+                document.getElementById('categoryId').value = category.id;
+                document.getElementById('categoryName').value = category.name;
+                document.getElementById('categoryDesc').value = category.description || '';
+            } else {
+                document.getElementById('categoryForm').reset();
+                document.getElementById('categoryId').value = '';
+            }
+
+            openModal('categoryModal');
+        }
+
+        async function submitCategory(e) {
+            e.preventDefault();
+            const id = document.getElementById('categoryId').value;
+            const name = document.getElementById('categoryName').value.trim();
+            const description = document.getElementById('categoryDesc').value.trim();
+
+            if (!name) {
+                toast('Vui lòng nhập tên danh mục!', 'error');
+                return;
+            }
+
+            const payload = { name, description };
+
+            try {
+                if (id) {
+                    await apiFetch(`${API}/categories/${id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(payload)
+                    });
+                    toast('Cập nhật danh mục thành công!', 'success');
+                } else {
+                    await apiFetch(`${API}/categories`, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    toast('Thêm danh mục thành công!', 'success');
+                }
+                closeModal('categoryModal');
+                await loadCategories();
+            } catch (err) {
+                let msg = err.message;
+                try {
+                    const parsed = JSON.parse(err.message);
+                    if (parsed.message) msg = parsed.message;
+                } catch (_) { }
+                toast('Lỗi: ' + msg, 'error');
+            }
+        }
+
+        async function deleteCategory(id, name) {
+            if (!confirm(`Bạn có chắc muốn xóa danh mục "${name}"?\nLưu ý: Không thể xóa danh mục đang có sản phẩm.`)) return;
+            try {
+                await apiFetch(`${API}/categories/${id}`, { method: 'DELETE' });
+                toast(`Đã xóa danh mục "${name}"!`, 'success');
+                await loadCategories();
+            } catch (err) {
+                let msg = err.message;
+                try {
+                    const parsed = JSON.parse(err.message);
+                    if (parsed.message) msg = parsed.message;
+                } catch (_) { }
+                toast('Lỗi xóa danh mục: ' + msg, 'error');
+            }
+        }
+
+        // =================== ORDERS ===================
+        async function loadOrders() {
+            try {
+                allOrders = await apiFetch(`${API}/admin/orders`);
+                renderOrders(allOrders);
+            } catch (e) {
+                toast('Không thể tải đơn hàng: ' + e.message, 'error');
+            }
+        }
+
+        function renderOrders(orders) {
+            const tbody = document.getElementById('ordersTableBody');
+            if (!orders || orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="bi bi-receipt"></i><p>Chưa có đơn hàng nào</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = orders.map(o => `
+        <tr>
+            <td><strong style="color:var(--accent-primary)">#${o.id}</strong></td>
+            <td>
+                <div style="font-weight:600;font-size:13px">${o.customerUsername || '--'}</div>
+                <div style="font-size:11px;color:var(--text-muted)">${o.customerEmail || ''}</div>
+            </td>
+            <td style="color:var(--accent-secondary);font-weight:700">${fmtMoney(o.totalPrice)}</td>
+            <td style="font-size:12px">${paymentBadge(o.paymentMethod)}</td>
+            <td style="font-size:12px;color:${o.trackingNumber ? 'var(--accent-success)' : 'var(--text-muted)'};font-family:monospace">
+                ${o.trackingNumber || '<span style="color:var(--text-muted)">--</span>'}
+            </td>
+            <td>${statusBadge(o.status)}</td>
+            <td style="font-size:12px;color:var(--text-muted)">${fmtDate(o.createdAt)}</td>
+            <td>
+                <button class="btn-icon view" onclick="viewOrderDetail(${o.id})" title="Xem chi tiết"><i class="bi bi-eye"></i></button>
+                <button class="btn-icon edit" onclick="openStatusModal(${o.id}, '${o.status}', '${o.trackingNumber || ''}')" title="Cập nhật trạng thái"><i class="bi bi-arrow-repeat"></i></button>
+            </td>
+        </tr>
+    `).join('');
+        }
+
+        function filterOrders() {
+            const search = document.getElementById('orderSearch').value.toLowerCase();
+            const status = document.getElementById('orderStatusFilter').value;
+            const filtered = allOrders.filter(o => {
+                const matchSearch = !search || String(o.id).includes(search) ||
+                    (o.customerUsername || '').toLowerCase().includes(search) ||
+                    (o.customerEmail || '').toLowerCase().includes(search);
+                const matchStatus = !status || o.status === status;
+                return matchSearch && matchStatus;
+            });
+            renderOrders(filtered);
+        }
+
+        async function viewOrderDetail(orderId) {
+            const order = allOrders.find(o => o.id === orderId);
+            if (!order) return;
+
+            const steps = ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED'];
+            const stepLabels = ['Chờ xác nhận', 'Đang xử lý', 'Đã giao vận chuyển', 'Đã giao thành công'];
+            const stepIcons = ['⏳', '🔧', '🚚', '✅'];
+
+            const currentIdx = order.status === 'CANCELLED' ? -1 : steps.indexOf(order.status);
+
+            const timelineHTML = order.status === 'CANCELLED'
+                ? `<div class="timeline-step"><div class="timeline-dot" style="background:var(--accent-danger);border-color:var(--accent-danger);color:white">❌</div><div class="timeline-body"><div class="timeline-title">Đơn hàng đã bị hủy</div></div></div>`
+                : steps.map((s, i) => {
+                    const done = i < currentIdx;
+                    const current = i === currentIdx;
+                    return `
+                <div class="timeline-step ${done ? 'done' : ''} ${current ? 'current' : ''}">
+                    <div class="timeline-dot">${stepIcons[i]}</div>
+                    <div class="timeline-body">
+                        <div class="timeline-title">${stepLabels[i]}</div>
+                        <div class="timeline-sub">${done || current ? (i === 0 ? fmtDate(order.createdAt) : 'Hoàn thành') : 'Chờ xử lý'}</div>
+                    </div>
+                </div>`;
+                }).join('');
+
+            const itemsHTML = (order.items || []).map(item => `
+        <tr>
+            <td>${item.productName}</td>
+            <td>${item.quantity}</td>
+            <td>${fmtMoney(item.price)}</td>
+            <td style="font-weight:600;color:var(--accent-secondary)">${fmtMoney(item.price * item.quantity)}</td>
+        </tr>
+    `).join('');
+
+            document.getElementById('orderModalTitle').textContent = `Chi tiết đơn hàng #${order.id}`;
+            document.getElementById('orderModalContent').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+            <div class="card" style="padding:16px">
+                <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:12px">Thông tin khách hàng</div>
+                <div style="margin-bottom:6px"><span style="color:var(--text-secondary)">Tên:</span> <strong>${order.customerUsername || '--'}</strong></div>
+                <div style="margin-bottom:6px"><span style="color:var(--text-secondary)">Email:</span> ${order.customerEmail || '--'}</div>
+                <div style="margin-bottom:6px"><span style="color:var(--text-secondary)">Địa chỉ:</span> ${order.shippingAddress || '--'}</div>
+            </div>
+            <div class="card" style="padding:16px">
+                <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:12px">Thông tin thanh toán</div>
+                <div style="margin-bottom:6px"><span style="color:var(--text-secondary)">Phương thức:</span> <strong>${paymentBadge(order.paymentMethod)}</strong></div>
+                <div style="margin-bottom:6px"><span style="color:var(--text-secondary)">Tổng tiền:</span> <strong style="color:var(--accent-secondary)">${fmtMoney(order.totalPrice)}</strong></div>
+                <div style="margin-bottom:6px"><span style="color:var(--text-secondary)">Ngày đặt:</span> ${fmtDate(order.createdAt)}</div>
+                ${order.trackingNumber ? `<div style="margin-bottom:6px"><span style="color:var(--text-secondary)">Vận đơn:</span> <code style="background:var(--bg-secondary);padding:2px 8px;border-radius:4px;font-size:12px;">${order.trackingNumber}</code></div>` : ''}
+            </div>
+        </div>
+
+        <div class="card" style="padding:16px;margin-bottom:20px">
+            <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:14px">Trạng thái vận đơn</div>
+            <div class="timeline">${timelineHTML}</div>
+        </div>
+
+        <div class="card" style="padding:16px">
+            <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:12px">Sản phẩm đã đặt</div>
+            <table>
+                <thead><tr><th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead>
+                <tbody>${itemsHTML}</tbody>
+                <tfoot>
+                    <tr><td colspan="3" style="text-align:right;font-weight:600;color:var(--text-secondary)">TỔNG CỘNG</td>
+                    <td style="font-weight:800;color:var(--accent-secondary);font-size:15px">${fmtMoney(order.totalPrice)}</td></tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="form-actions" style="margin-top:16px">
+            <button class="btn-secondary" onclick="closeModal('orderModal')">Đóng</button>
+            <button class="btn-primary" onclick="closeModal('orderModal'); openStatusModal(${order.id}, '${order.status}', '${order.trackingNumber || ''}')">
+                <i class="bi bi-pencil"></i> Cập nhật trạng thái
+            </button>
+        </div>
+    `;
+
+            openModal('orderModal');
+        }
+
+        function openStatusModal(orderId, currentStatus, trackingNumber) {
+            document.getElementById('statusOrderId').value = orderId;
+            document.getElementById('statusSelect').value = currentStatus;
+            document.getElementById('trackingInput').value = trackingNumber || '';
+            openModal('statusModal');
+        }
+
+        async function submitStatusUpdate() {
+            const orderId = document.getElementById('statusOrderId').value;
+            const status = document.getElementById('statusSelect').value;
+            const trackingNumber = document.getElementById('trackingInput').value;
+
+            try {
+                await apiFetch(`${API}/admin/orders/${orderId}/status`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ status, trackingNumber: trackingNumber || null })
+                });
+                toast('Cập nhật trạng thái thành công!', 'success');
+                closeModal('statusModal');
+                // Reload current data
+                allOrders = await apiFetch(`${API}/admin/orders`);
+                if (document.getElementById('page-orders').classList.contains('active')) renderOrders(allOrders);
+                if (document.getElementById('page-shipping').classList.contains('active')) renderShippingTable(allOrders);
+                document.getElementById('pendingBadge').textContent = allOrders.filter(o => o.status === 'PENDING').length;
+            } catch (err) {
+                toast('Lỗi cập nhật: ' + err.message, 'error');
+            }
+        }
+
+        // =================== SHIPPING ===================
+        async function loadShipping() {
+            try {
+                if (allOrders.length === 0) {
+                    allOrders = await apiFetch(`${API}/admin/orders`);
+                }
+                renderShippingTable(allOrders);
+            } catch (e) {
+                toast('Không thể tải vận đơn: ' + e.message, 'error');
+            }
+        }
+
+        function renderShippingTable(orders) {
+            const tbody = document.getElementById('shippingTableBody');
+            if (!orders || orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="bi bi-truck"></i><p>Không có đơn hàng nào</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = orders.map(o => `
+        <tr>
+            <td><strong style="color:var(--accent-primary)">#${o.id}</strong></td>
+            <td>
+                <div style="font-weight:600;font-size:13px">${o.customerUsername || '--'}</div>
+                <div style="font-size:11px;color:var(--text-muted)">${o.customerEmail || ''}</div>
+            </td>
+            <td style="font-size:12px;max-width:160px;word-break:break-word">${o.shippingAddress || '--'}</td>
+            <td>
+                ${o.trackingNumber
+                    ? `<code style="background:var(--bg-secondary);padding:3px 8px;border-radius:4px;font-size:12px;color:var(--accent-success)">${o.trackingNumber}</code>`
+                    : `<span style="color:var(--text-muted);font-size:12px">Chưa có</span>`
+                }
+            </td>
+            <td>${statusBadge(o.status)}</td>
+            <td style="font-size:12px;color:var(--text-muted)">${fmtDate(o.createdAt)}</td>
+            <td>
+                <button class="btn-icon edit" onclick="openStatusModal(${o.id}, '${o.status}', '${o.trackingNumber || ''}')" title="Cập nhật vận đơn">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn-icon view" onclick="viewOrderDetail(${o.id})" title="Xem chi tiết">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+        }
+
+        function filterShipping() {
+            const search = document.getElementById('shippingSearch').value.toLowerCase();
+            const statusFilter = document.getElementById('shippingStatusFilter').value;
+            const statuses = statusFilter ? statusFilter.split(',') : [];
+
+            const filtered = allOrders.filter(o => {
+                const matchSearch = !search ||
+                    String(o.id).includes(search) ||
+                    (o.customerUsername || '').toLowerCase().includes(search) ||
+                    (o.trackingNumber || '').toLowerCase().includes(search);
+                const matchStatus = statuses.length === 0 || statuses.includes(o.status);
+                return matchSearch && matchStatus;
+            });
+            renderShippingTable(filtered);
+        }
+
+        // =================== INIT ===================
+        window.onload = () => {
+            checkAdminAccess().then(data => {
+                if (!data) return;
+                if (window.gsap) {
+                    gsap.from('.sidebar-logo', { opacity: 0, x: -12, duration: 0.45, ease: 'power2.out' });
+                    gsap.from('.stat-card', { opacity: 0, y: 14, duration: 0.42, stagger: 0.08, delay: 0.08, ease: 'power2.out' });
+                }
+                const username = localStorage.getItem('username') || 'Admin';
+                document.getElementById('adminName').textContent = username;
+                document.getElementById('adminGreet').textContent = username;
+                document.getElementById('adminAvatarText').textContent = username.charAt(0).toUpperCase();
+                loadDashboard(data);
+            });
+        };
+    </script>
+</body>
+
+</html>
